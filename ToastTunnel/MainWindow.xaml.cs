@@ -28,6 +28,7 @@ namespace ToastTunnel
         public MainWindow()
         {
             InitializeComponent();
+            cmbHosts.ItemsSource = _host.Hosts;
             isInit = true;
         }
         private bool canStart()
