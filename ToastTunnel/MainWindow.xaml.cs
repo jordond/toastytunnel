@@ -65,6 +65,7 @@ namespace ToastTunnel
             if (File.Exists(txtPrivateKey.Text) && cmbHosts.Text != "")
             {
                 _host.Hosts.Add(cmbHosts.Text);
+                _host.saveHosts();
                 cmdStop.IsEnabled = startSession("-ssh -i " + txtPrivateKey.Text + " -D 12344 " + txtUser.Text + "@" + cmbHosts.Text);
             }
             else
