@@ -33,7 +33,7 @@ namespace ToastTunnel
         }
         private bool canStart()
         {
-            if (txtUser.Text == ""  || cmbHosts.Text == null || txtPrivateKey.Text == "")
+            if (txtUser.Text == ""  || cmbHosts.Text == "" || txtPrivateKey.Text == "")
                 return false;
             if (chkTunnel.IsChecked == true)
             {
