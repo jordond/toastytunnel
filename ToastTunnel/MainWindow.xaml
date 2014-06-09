@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ToastTunnel.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ToastyTunnel - SSH Bridge" Height="261.73" Width="525" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+        Title="ToastyTunnel - SSH Bridge" Height="209.384" Width="466.496" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
     <Grid>
         <CheckBox x:Name="chkTunnel" Content="Tunnel" HorizontalAlignment="Left" Margin="19,76,0,0" IsChecked="True" VerticalAlignment="Top" Click="chkTunnel_Click"/>
         <TextBox x:Name="txtTunnelPort" HorizontalAlignment="Left" Height="23" Margin="134,73,0,0" TextWrapping="Wrap" Text="12344" IsEnabled="{Binding IsChecked, ElementName=chkTunnel}" VerticalAlignment="Top" Width="65" TextChanged="txtTunnelPort_TextChanged"/>
