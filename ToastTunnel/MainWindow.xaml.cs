@@ -87,6 +87,7 @@ namespace ToastTunnel
                 info.Arguments = sshCommand;
                 info.FileName = _client;
                 info.WindowStyle = ProcessWindowStyle.Minimized;
+                info.UseShellExecute = false;
                 info.CreateNoWindow = true;
 
                 _plink.StartInfo = info;
