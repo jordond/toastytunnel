@@ -66,18 +66,10 @@ namespace Toaster
 
         private void writeToLog(string line)
         {
-            try
+            using (StreamWriter sw = new StreamWriter(logFileFull, true))
             {
-                using (StreamWriter sw = new StreamWriter(logFileFull, true))
-                {
-                    sw.WriteLine(line);
-                }
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine(ex.Message);
-            }
+                sw.WriteLine(line);
+            }            
         }
 
         private string logHeader()
