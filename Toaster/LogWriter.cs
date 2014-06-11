@@ -27,6 +27,21 @@ namespace Toaster
          
         public LogWriter()
         {
+            createLogfile();
+        }
+
+        public void addEntry(LogLevels logLevel, string message)
+        {
+            StringBuilder wl = new StringBuilder();
+            wl.Append(getLogLevel(logLevel));
+            wl.Append(" " + DateTime.Now.ToString() + ": ");
+            wl.Append(message);
+
+            writeToLog(wl.ToString());
+        }
+
+        private void createLogfile()
+        {
             try
             {
                 logFileFull = logFilePath + logFileName;
@@ -42,20 +57,10 @@ namespace Toaster
                     File.Create(logFileFull);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-            }            
-        }
-
-        public void addEntry(LogLevels logLevel, string message)
-        {
-            StringBuilder wl = new StringBuilder();
-            wl.Append(getLogLevel(logLevel));
-            wl.Append(" " + DateTime.Now.ToString() + ": ");
-            wl.Append(message);
-
-            writeToLog(wl.ToString());
+            }          
         }
 
         private void writeToLog(string line)
