@@ -12,6 +12,7 @@ namespace Toaster
         private const string savedData = "files\\data";        
         public List<Session> Sessions { get; set; }
         public List<Identity> Identities { get; set; }
+        public bool dataFileIsGood { get; set; }
         private List<string> _data;
 
         public Information()
@@ -22,7 +23,7 @@ namespace Toaster
             if (File.Exists(savedData))
             {
                 _data = loadData();
-                sortData();
+                dataFileIsGood = sortData();                    
             }
         }
 
