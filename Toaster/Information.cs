@@ -13,7 +13,7 @@ namespace Toaster
         public List<Session> Sessions { get; set; }
         public List<Identity> Identities { get; set; }
         public bool dataFileIsGood { get; set; }
-        private List<string> _data;
+        public List<string> _data { get; set; }
 
         public Information()
         {
@@ -22,7 +22,7 @@ namespace Toaster
 
             if (File.Exists(savedData))
             {
-                _data = loadData();
+                _data = loadDataFromFile();
                 dataFileIsGood = sortData();                    
             }
         }
@@ -34,6 +34,7 @@ namespace Toaster
                 if (File.Exists(savedData))
                     File.Delete(savedData);
 
+                _data = loadDataFromLists();
                 File.WriteAllLines(savedData, _data.ToArray());
 
             }
@@ -43,7 +44,9 @@ namespace Toaster
             }
         }
 
-        private List<string> loadData()
+        
+
+        private List<string> loadDataFromFile()
         {
             try
             {
@@ -54,6 +57,11 @@ namespace Toaster
             {
                 throw new Exception("Information.cs - loadData() " + ex.Message);
             }
+        }
+
+        private List<string> loadDataFromLists()
+        {
+            return null;
         }
 
         private bool sortData()
