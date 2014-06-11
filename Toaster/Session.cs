@@ -22,8 +22,12 @@ namespace Toaster
         {
             get
             {
+                StringBuilder cs = new StringBuilder();
+                cs.Append("-ssh ");
+                
                 return "";
             }
+            set;
         }
 
         public List<Session> loadSessions()

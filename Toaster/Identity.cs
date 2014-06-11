@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.IO;
+
 namespace Toaster
 {
     public class Identity
@@ -11,15 +13,16 @@ namespace Toaster
         public int ID { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
+        public Path PrivateKey { get; set; }
         public bool Save { get; set; }
 
         public Identity() { }
 
-        public Identity(int id, string user, string password, bool save)
+        public Identity(string user, string password, Path pKey, bool save)
         {
-            ID = id;
             User = user;
             Password = password;
+            PrivateKey = pKey;
             Save = save;
         }
 
