@@ -49,13 +49,13 @@ namespace Toaster
                 if (!Directory.Exists(logFilePath))
                     Directory.CreateDirectory(logFilePath);
                 if (!File.Exists(logFileFull))
-                    File.Create(logFileFull);
+                    File.Create(logFileFull).Dispose();
                 else
                 {
                     if (File.Exists(logFileFull + ".old"))
                         File.Delete(logFileFull + ".old");
                     File.Move(logFileFull, logFileFull + ".old");
-                    File.Create(logFileFull);
+                    File.Create(logFileFull).Dispose();
                 }
             }
             catch (Exception ex)
