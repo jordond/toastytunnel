@@ -3,26 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ToastyTunnel - SSH Bridge" Height="297.653" Width="567.083" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <Label Content="Tunnel Settings:" HorizontalAlignment="Left" Margin="201,123,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.578,0.57"/>
-        <Label Content="User:" HorizontalAlignment="Left" Margin="200,12,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="txtUser" HorizontalAlignment="Left" Height="23" Margin="276,16,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92" TextChanged="txtUser_TextChanged"/>
-        <Label Content="Password:" HorizontalAlignment="Left" Margin="373,12,0,0" VerticalAlignment="Top"/>
-        <Label Content="Private Key:" HorizontalAlignment="Left" Margin="200,44,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="txtPrivateKey" HorizontalAlignment="Left" Height="23" Margin="276,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180" TextChanged="txtPrivateKey_TextChanged" IsReadOnly="True"/>
-        <Button Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="461,43,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
-        <Button Name="cmdStart" Content="Start" HorizontalAlignment="Left" Margin="381,210,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="cmdStart_Click"/>
-        <Button x:Name="cmdStop" Content="Stop" HorizontalAlignment="Left" Margin="461,210,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="cmdStop_Click"/>
-        <Label Content="Host:" HorizontalAlignment="Left" Margin="201,92,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="cmbHosts" HorizontalAlignment="Left" Margin="277,96,0,0" VerticalAlignment="Top" Width="260" IsEditable="True" SelectionChanged="cmbHosts_SelectionChanged"/>
+        <Label Content="Tunnel Settings:" HorizontalAlignment="Left" Margin="201,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.578,0.57"/>
+        <Label Content="User:" HorizontalAlignment="Left" Margin="201,37,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="txtUser" HorizontalAlignment="Left" Height="23" Margin="277,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92" TextChanged="txtUser_TextChanged"/>
+        <Label Content="Password:" HorizontalAlignment="Left" Margin="374,37,0,0" VerticalAlignment="Top"/>
+        <Label Content="Private Key:" HorizontalAlignment="Left" Margin="201,69,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="txtPrivateKey" HorizontalAlignment="Left" Height="23" Margin="277,69,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180" TextChanged="txtPrivateKey_TextChanged" IsReadOnly="True"/>
+        <Button Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="462,68,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
+        <Button Name="cmdStart" Content="Start" HorizontalAlignment="Left" Margin="382,219,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="cmdStart_Click"/>
+        <Button x:Name="cmdStop" Content="Stop" HorizontalAlignment="Left" Margin="462,219,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="cmdStop_Click"/>
+        <Label Content="Host:" HorizontalAlignment="Left" Margin="201,110,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cmbHosts" HorizontalAlignment="Left" Margin="277,114,0,0" VerticalAlignment="Top" Width="260" IsEditable="True" SelectionChanged="cmbHosts_SelectionChanged"/>
         <ListBox x:Name="lstSessions" HorizontalAlignment="Left" Height="231" Margin="10,10,0,0" VerticalAlignment="Top" Width="181"/>
-        <TextBox x:Name="txtLocalPort" HorizontalAlignment="Left" Height="23" Margin="206,169,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57" IsEnabled="{Binding IsChecked, ElementName=rdLocal}"/>
-        <Label Content=":" HorizontalAlignment="Left" Margin="263,166,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtRemoteHost" HorizontalAlignment="Left" Height="23" Margin="276,169,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" IsEnabled="{Binding IsChecked, ElementName=rdLocal}"/>
-        <Label Content=":" HorizontalAlignment="Left" Margin="389,166,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtRemotePort" HorizontalAlignment="Left" Height="23" Margin="402,169,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
-        <RadioButton x:Name="rdLocal" Content="Local" HorizontalAlignment="Left" Margin="206,148,0,0" VerticalAlignment="Top"/>
-        <RadioButton x:Name="rdDynamic" Content="Dynamic" HorizontalAlignment="Left" Margin="276,149,0,0" VerticalAlignment="Top" IsChecked="True"/>
-        <PasswordBox x:Name="txtPassword" HorizontalAlignment="Left" Margin="441,16,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox x:Name="txtLocalPort" HorizontalAlignment="Left" Height="23" Margin="206,187,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57" IsEnabled="{Binding IsChecked, ElementName=rdLocal}"/>
+        <Label Content=":" HorizontalAlignment="Left" Margin="263,184,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtRemoteHost" HorizontalAlignment="Left" Height="23" Margin="276,187,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113" IsEnabled="{Binding IsChecked, ElementName=rdLocal}"/>
+        <Label Content=":" HorizontalAlignment="Left" Margin="389,184,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtRemotePort" HorizontalAlignment="Left" Height="23" Margin="402,187,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="57"/>
+        <RadioButton x:Name="rdLocal" Content="Local" HorizontalAlignment="Left" Margin="206,166,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="rdDynamic" Content="Dynamic" HorizontalAlignment="Left" Margin="276,167,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <PasswordBox x:Name="txtPassword" HorizontalAlignment="Left" Margin="442,41,0,0" VerticalAlignment="Top" Width="95"/>
+        <Label Content="Identity:" HorizontalAlignment="Left" Margin="201,6,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cmbIdentity" HorizontalAlignment="Left" Margin="277,10,0,0" VerticalAlignment="Top" Width="92"/>
+        <Button x:Name="btnIdentitySave" Content="Save" HorizontalAlignment="Left" Margin="382,10,0,0" VerticalAlignment="Top" Width="75"/>
 
     </Grid>
 </Window>
