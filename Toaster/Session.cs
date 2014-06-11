@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Toaster
 {
@@ -24,8 +25,17 @@ namespace Toaster
             {
                 StringBuilder cs = new StringBuilder();
                 cs.Append("-ssh ");
-                
-                return "";
+                if (File.Exists(identity.PrivateKey))
+                    cs.Append("-i " + identity.PrivateKey + " ");
+                if (IsLocal)
+                    cs.Append("-L " + LocalPort + ":" + RemoteAddress + ":" + RemotePort);
+                else
+                    cs.Append("-D " + RemotePort + " ");
+                cs.Append(identity.User + "@" + Host + " ");
+                if (!File.Exists(identity.PrivateKey) || identity.Password != "")
+                    cs.Append("-pw " + identity.Password);
+
+                return cs.ToString();
             }
             set;
         }
