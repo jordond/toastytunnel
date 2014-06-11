@@ -52,24 +52,39 @@ namespace Toaster
             }
         }
 
-        private void sortData()
+        private bool sortData()
         {
-            for (int i = 0; i < _data.Count(); ++i)
+            try
             {
-                if (_data[i] == "%IDENTITY%")
+                for (int i = 0; i < _data.Count(); ++i)
                 {
-                    Identity temp = new Identity();
-                    temp.ID = int.Parse(_data[i + 1]);
-                    temp.User = _data[i + 2];
-                    temp.Password = _data[i + 3];
-                    temp.PrivateKey = _data[i + 4];
-                    Identities.Add(temp);
+                    if (_data[i] == "%IDENTITY%")
+                    {
+                        Identity temp = new Identity();
+                        temp.ID = int.Parse(_data[i + 1]);
+                        temp.User = _data[i + 2];
+                        temp.Password = _data[i + 3];
+                        temp.PrivateKey = _data[i + 4];
+                        Identities.Add(temp);
 
+                    }
+                    else if (_data[i] == "%SESSION%")
+                    {
+                        Session temp = new Session();
+                        temp.ID = int.Parse(_data[i + 1]);
+                        temp.identity = Identities.Where(t => t.ID == int.Parse(_data[i + 2])).First();
+                        temp.Host = _data[i + 3];
+                        temp.IsLocal = bool.Parse(_data[i + 4]);
+                        temp.LocalPort = temp.IsLocal == false ? 0 : int.Parse(_data[i + 5]);
+                        temp.RemoteAddress = temp.IsLocal == false ? "" : _data[i + 6];
+                        temp.RemotePort = int.Parse(_data[i + 7]);
+                    }
                 }
-                else if (_data[i] == "%SESSION%")
-                {
-
-                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }
