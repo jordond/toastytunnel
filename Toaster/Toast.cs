@@ -22,6 +22,7 @@ namespace Toaster
             _sessions = _data.Sessions;
 
             _logWriter.addEntry(LogLevels.ERROR, "This is a test");
+            _data.saveData();
         }
     }
 }
