@@ -30,7 +30,7 @@ namespace ToastTunnel
             InitializeComponent();
             //cmbHosts.ItemsSource = _host.Hosts;
             //debug
-            Tunnel temp = new Tunnel();
+            Toast temp = new Toast();
             isInit = true;
         }
         private bool canStart()
