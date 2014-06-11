@@ -16,6 +16,14 @@ namespace Toaster
         private string logFilePath = @"logs\";
         private string logFileName = "toastytunnel.log";
         private string logFileFull;
+
+        public enum LogLevels
+        {
+            INFO = 0,
+            WARNING = 1,
+            ERROR = 2,
+            DEBUG = 3
+        };
  
         public LogWriter()
         {
@@ -34,7 +42,7 @@ namespace Toaster
 
         }
 
-        public void writeLog(string logLevel, string date, string message)
+        public void writeLog(int logLevel, string date, string message)
         {
             try
             {
@@ -64,6 +72,18 @@ namespace Toaster
             h.AppendLine("#########################################################");
             h.AppendLine("");
             return h.ToString();
+        }
+
+        private string getLogLevel(int errorCode)
+        {
+            switch (errorCode)
+            {
+                case 0: return "INFO: ";
+                case 1: return "WARNING:  ";
+                case 2: return "ERROR: ";
+                case 3: return "DEBUG: ";
+                default: return "NONE: ";
+            }
         }
 
         private string getIPAddress()
