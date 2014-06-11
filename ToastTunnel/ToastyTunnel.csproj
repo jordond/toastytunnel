@@ -114,12 +114,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ToastConfig\ToastyConfig.csproj">
-      <Project>{98191d50-e404-465c-be54-5dfdde63ae81}</Project>
-      <Name>ToastyConfig</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
