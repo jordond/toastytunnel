@@ -12,5 +12,10 @@ namespace Toaster
         public Process Instance { get; set; }
         public ProcessStartInfo InstanceInfo { get; set; }
         public string ConnectionString { get; set; }
+
+        public Tunnel()
+        {
+            Information temp = new Information();
+        }
     }
 }

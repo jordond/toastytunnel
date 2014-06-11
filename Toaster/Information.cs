@@ -9,20 +9,18 @@ namespace Toaster
 {
     public class Information
     {
-        private const string savedData = "files\\config";        
+        private const string savedData = "files\\data";        
         public List<Session> Sessions { get; set; }
         public List<Identity> Identities { get; set; }
         private List<string> _data;
 
         public Information()
         {
-            if (!File.Exists(savedData))
-                File.Create(savedData);
-
-            _data = loadData();
-
-            if (_data != null)
+            if (File.Exists(savedData))
+            {
+                _data = loadData();
                 sortData();
+            }
         }
 
         public void saveData()
@@ -56,7 +54,23 @@ namespace Toaster
 
         private void sortData()
         {
+            for (int i = 0; i < _data.Count(); ++i)
+            {
+                if (_data[i] == "%IDENTITY%")
+                {
+                    Identity temp = new Identity();
+                    temp.ID = int.Parse(_data[i + 1]);
+                    temp.User = _data[i + 2];
+                    temp.Password = _data[i + 3];
+                    temp.PrivateKey = _data[i + 4];
+                    Identities.Add(temp);
 
+                }
+                else if (_data[i] == "%SESSION%")
+                {
+
+                }
+            }
         }
     }
 }
