@@ -35,11 +35,10 @@ namespace ToastTunnel
         {
             if (txtUser.Text == ""  || cmbHosts.Text == "" || txtPrivateKey.Text == "")
                 return false;
-            if (chkTunnel.IsChecked == true)
-            {
-                if (txtTunnelPort.Text == "")
-                    return false;
-            }
+            
+            if (txtTunnelPort.Text == "")
+                return false;
+            
             return true;
         }
 
@@ -79,8 +78,7 @@ namespace ToastTunnel
         {
             string connectionString = "-ssh ";
             connectionString += "-i " + txtPrivateKey.Text + " ";
-            if (chkTunnel.IsChecked == true)
-                connectionString += "-D " + txtTunnelPort.Text + " ";
+            connectionString += "-D " + txtTunnelPort.Text + " ";
             if (txtUser.Text != "")
                 connectionString += txtUser.Text + "@" + cmbHosts.Text;
 
@@ -134,12 +132,6 @@ namespace ToastTunnel
         }
 
         private void txtTunnelPort_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (isInit)
-                cmdStart.IsEnabled = canStart();
-        }
-
-        private void chkTunnel_Click(object sender, RoutedEventArgs e)
         {
             if (isInit)
                 cmdStart.IsEnabled = canStart();
