@@ -13,9 +13,11 @@ namespace Toaster
         public ProcessStartInfo InstanceInfo { get; set; }
         public string ConnectionString { get; set; }
 
+        public static Information _data;
+
         public Tunnel()
         {
-            Information temp = new Information();
+            _data = new Information();
         }
     }
 }
