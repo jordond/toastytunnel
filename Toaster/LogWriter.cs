@@ -48,18 +48,19 @@ namespace Toaster
             }            
         }
 
-        public void writeLog(LogLevels logLevel, string message)
+        public void addEntry(LogLevels logLevel, string message)
         {
-            try
-            {
-                StringBuilder wl = new StringBuilder();
-                wl.Append(getLogLevel(logLevel));
-               
-            }
-            catch(Exception ex)
-            {
+            StringBuilder wl = new StringBuilder();
+            wl.Append(getLogLevel(logLevel));
+            wl.Append(" " + DateTime.Now.ToString() + ": ");
+            wl.Append(message);
 
-            }
+            writeToLog(wl.ToString());
+        }
+
+        private void writeToLog(string line)
+        {
+
         }
 
         private string logHeader()
@@ -86,10 +87,10 @@ namespace Toaster
         {
             switch (errorCode)
             {
-                case LogLevels.INFO:    return "INFO: ";
-                case LogLevels.WARNING: return "WARNING: ";
-                case LogLevels.ERROR:   return "ERROR: ";
-                case LogLevels.DEBUG:   return "DEBUG: ";
+                case LogLevels.INFO:    return "INFO -";
+                case LogLevels.WARNING: return "WARNING -";
+                case LogLevels.ERROR:   return "ERROR -";
+                case LogLevels.DEBUG:   return "DEBUG -";
                 default: return "NONE: ";
             }
         }

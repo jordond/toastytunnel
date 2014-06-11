@@ -21,7 +21,7 @@ namespace Toaster
             _identities = _data.Identities;
             _sessions = _data.Sessions;
 
-            _logWriter.writeLog(LogLevels.ERROR, "This is a test");
+            _logWriter.addEntry(LogLevels.ERROR, "This is a test");
         }
     }
 }
