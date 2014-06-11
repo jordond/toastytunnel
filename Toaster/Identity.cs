@@ -23,10 +23,5 @@ namespace Toaster
             PrivateKey = pKey;
             Save = save;
         }
-
-        public List<Identity> loadIdentities()
-        {
-            return null;
-        }
     }
 }

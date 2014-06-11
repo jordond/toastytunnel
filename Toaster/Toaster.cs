@@ -8,5 +8,16 @@ namespace Toaster
 {
     public class Toaster
     {
+        private List<Identity> _identities;
+        private List<Session> _sessions;
+        private List<Tunnel> _tunnels;
+        public static Information _data;
+
+        public Toaster()
+        {
+            _data = new Information();
+            _identities = _data.Identities;
+            _sessions = _data.Sessions;
+        }
     }
 }

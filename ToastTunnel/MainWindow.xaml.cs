@@ -14,21 +14,23 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.IO;
-using ToastConfig;
+using Toaster;
 
 namespace ToastTunnel
 {    
     public partial class MainWindow : Window
     {
         private const string _client = "files\\plink.exe";
-        private Host _host = new Host();
+        //private Host _host = new Host();
         private Process _plink;        
         public bool isInit = false;
 
         public MainWindow()
         {
             InitializeComponent();
-            cmbHosts.ItemsSource = _host.Hosts;
+            //cmbHosts.ItemsSource = _host.Hosts;
+            //debug
+            Tunnel temp = new Tunnel();
             isInit = true;
         }
         private bool canStart()
@@ -63,8 +65,8 @@ namespace ToastTunnel
         {
             if (File.Exists(txtPrivateKey.Text) && cmbHosts.Text != "")
             {
-                _host.Hosts.Add(cmbHosts.Text);
-                _host.saveHosts();
+                //_host.Hosts.Add(cmbHosts.Text);
+                //_host.saveHosts();
                 cmdStop.IsEnabled = startSession(buildConnectionString());
             }
             else
