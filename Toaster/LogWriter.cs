@@ -11,34 +11,50 @@ using System.Net.Sockets;
 
 namespace Toaster
 {
+    public enum LogLevels
+    {
+        INFO = 0,
+        WARNING = 1,
+        ERROR = 2,
+        DEBUG = 3
+    };
+
     public class LogWriter
     {
-        private string logFilePath = @"logs\";
+        private string logFilePath = "logs\\";
         private string logFileName = "toastytunnel.log";
         private string logFileFull;
- 
+         
         public LogWriter()
-        {
-            logFileFull = logFilePath + logFileName;
-            if (!Directory.Exists(logFilePath))
-                Directory.CreateDirectory(logFilePath);
-            if (!File.Exists(logFileFull))
-                File.Create(logFileFull);
-            else
-            {
-                File.Move(logFileFull, logFileFull + File.GetLastWriteTime(logFileFull));
-                File.Create(logFileFull);
-            }
-
-            
-
-        }
-
-        public void writeLog(string logLevel, string date, string message)
         {
             try
             {
+                logFileFull = logFilePath + logFileName;
+                if (!Directory.Exists(logFilePath))
+                    Directory.CreateDirectory(logFilePath);
+                if (!File.Exists(logFileFull))
+                    File.Create(logFileFull);
+                else
+                {
+                    if (File.Exists(logFileFull + ".old"))
+                        File.Delete(logFileFull + ".old");
+                    File.Move(logFileFull, logFileFull + ".old");
+                    File.Create(logFileFull);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }            
+        }
 
+        public void writeLog(LogLevels logLevel, string message)
+        {
+            try
+            {
+                StringBuilder wl = new StringBuilder();
+                wl.Append(getLogLevel(logLevel));
+               
             }
             catch(Exception ex)
             {
@@ -64,6 +80,18 @@ namespace Toaster
             h.AppendLine("#########################################################");
             h.AppendLine("");
             return h.ToString();
+        }
+
+        private string getLogLevel(LogLevels errorCode)
+        {
+            switch (errorCode)
+            {
+                case LogLevels.INFO:    return "INFO: ";
+                case LogLevels.WARNING: return "WARNING: ";
+                case LogLevels.ERROR:   return "ERROR: ";
+                case LogLevels.DEBUG:   return "DEBUG: ";
+                default: return "NONE: ";
+            }
         }
 
         private string getIPAddress()

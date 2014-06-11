@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Toaster
 {
-    public class Toaster
+    public class Toast
     {
         private List<Identity> _identities;
         private List<Session> _sessions;
@@ -14,12 +14,14 @@ namespace Toaster
         public static LogWriter _logWriter;
         public static Information _data;
 
-        public Toaster()
+        public Toast()
         {
             _logWriter = new LogWriter();
             _data = new Information();
             _identities = _data.Identities;
             _sessions = _data.Sessions;
+
+            _logWriter.writeLog(LogLevels.ERROR, "This is a test");
         }
     }
 }
