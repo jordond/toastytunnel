@@ -33,9 +33,9 @@ namespace Toaster
 
         public void addEntry(LogLevels logLevel, string message)
         {
-            StringBuilder wl = new StringBuilder();
+            StringBuilder wl = new StringBuilder();            
+            wl.Append(DateTime.Now.ToString() + "- ");
             wl.Append(getLogLevel(logLevel));
-            wl.Append(" " + DateTime.Now.ToString() + ": ");
             wl.Append(message);
 
             writeToLog(wl.ToString());
@@ -103,10 +103,10 @@ namespace Toaster
         {
             switch (errorCode)
             {
-                case LogLevels.INFO:    return "INFO -";
-                case LogLevels.WARNING: return "WARNING -";
-                case LogLevels.ERROR:   return "ERROR -";
-                case LogLevels.DEBUG:   return "DEBUG -";
+                case LogLevels.INFO:    return "INFO: ";
+                case LogLevels.WARNING: return "WARNING: ";
+                case LogLevels.ERROR:   return "ERROR: ";
+                case LogLevels.DEBUG:   return "DEBUG: ";
                 default: return "NONE: ";
             }
         }
