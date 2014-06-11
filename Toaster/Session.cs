@@ -39,10 +39,5 @@ namespace Toaster
             }
             set{}
         }
-
-        public List<Session> loadSessions()
-        {
-            return null;
-        }
     }
 }

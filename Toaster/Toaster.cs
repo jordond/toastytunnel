@@ -11,11 +11,13 @@ namespace Toaster
         private List<Identity> _identities;
         private List<Session> _sessions;
         private List<Tunnel> _tunnels;
+        public static Information _data;
 
         public Toaster()
         {
-            _identities = new Identity().loadIdentities();
-            _sessions = new Session().loadSessions();
+            _data = new Information();
+            _identities = _data.Identities;
+            _sessions = _data.Sessions;
         }
     }
 }
