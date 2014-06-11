@@ -19,7 +19,7 @@ namespace Toaster
         {
             Sessions = new List<Session>();
             Identities = new List<Identity>();
-
+            
             if (File.Exists(savedData))
             {
                 _data = loadDataFromFile();
@@ -45,6 +45,7 @@ namespace Toaster
             }
             catch (Exception ex)
             {
+                Toast._logWriter.addEntry(LogLevels.ERROR, "Information.cs - SaveData() " + ex.Message);
                 throw new Exception("Information.cs - saveData() " + ex.Message);
             }
         }
@@ -60,6 +61,7 @@ namespace Toaster
             }
             catch (Exception ex)
             {
+                Toast._logWriter.addEntry(LogLevels.ERROR, "Infomation.cs - loadData() " + ex.Message);
                 throw new Exception("Information.cs - loadData() " + ex.Message);
             }
         }
@@ -107,6 +109,7 @@ namespace Toaster
                         temp.Password = _data[i += 1];
                         temp.PrivateKey = _data[i += 1];
                         Identities.Add(temp);
+                        Toast._logWriter.addEntry(LogLevels.INFO, "Found identity: " + temp.User);
 
                     }
                     else if (_data[i] == "%SESSION%")
@@ -120,6 +123,7 @@ namespace Toaster
                         temp.RemoteAddress = _data[i += 1];
                         temp.RemotePort = int.Parse(_data[i += 1]);
                         Sessions.Add(temp);
+                        Toast._logWriter.addEntry(LogLevels.INFO, "Found session: " + temp.identity.User + "@" + temp.Host);
                     }
                 }
                 return true;
