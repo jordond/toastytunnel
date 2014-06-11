@@ -28,6 +28,7 @@ namespace Toaster
         public LogWriter()
         {
             createLogfile();
+            writeToLog(logHeader());
         }
 
         public void addEntry(LogLevels logLevel, string message)
@@ -65,7 +66,10 @@ namespace Toaster
 
         private void writeToLog(string line)
         {
-
+            using (StreamWriter sw = new StreamWriter(logFileFull))
+            {
+                sw.WriteLine(line);
+            }
         }
 
         private string logHeader()
