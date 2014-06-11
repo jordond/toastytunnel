@@ -11,20 +11,20 @@ using System.Net.Sockets;
 
 namespace Toaster
 {
+    public enum LogLevels
+    {
+        INFO = 0,
+        WARNING = 1,
+        ERROR = 2,
+        DEBUG = 3
+    };
+
     public class LogWriter
     {
         private string logFilePath = @"logs\";
         private string logFileName = "toastytunnel.log";
         private string logFileFull;
-
-        public enum LogLevels
-        {
-            INFO = 0,
-            WARNING = 1,
-            ERROR = 2,
-            DEBUG = 3
-        };
- 
+         
         public LogWriter()
         {
             logFileFull = logFilePath + logFileName;
@@ -42,11 +42,12 @@ namespace Toaster
 
         }
 
-        public void writeLog(int logLevel, string date, string message)
+        public void writeLog(LogLevels logLevel, string message)
         {
             try
             {
-
+                StringBuilder wl = new StringBuilder();
+                wl.AppendLine(getLogLevel(logLevel));
             }
             catch(Exception ex)
             {
@@ -74,14 +75,14 @@ namespace Toaster
             return h.ToString();
         }
 
-        private string getLogLevel(int errorCode)
+        private string getLogLevel(LogLevels errorCode)
         {
             switch (errorCode)
             {
-                case 0: return "INFO: ";
-                case 1: return "WARNING:  ";
-                case 2: return "ERROR: ";
-                case 3: return "DEBUG: ";
+                case LogLevels.INFO:    return "INFO: ";
+                case LogLevels.WARNING: return "WARNING: ";
+                case LogLevels.ERROR:   return "ERROR: ";
+                case LogLevels.DEBUG:   return "DEBUG: ";
                 default: return "NONE: ";
             }
         }

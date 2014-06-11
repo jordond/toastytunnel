@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Identity.cs" />
     <Compile Include="Information.cs" />
+    <Compile Include="LogWriter.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Toaster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

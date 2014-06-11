@@ -20,6 +20,8 @@ namespace Toaster
             _data = new Information();
             _identities = _data.Identities;
             _sessions = _data.Sessions;
+
+            _logWriter.writeLog(LogLevels.ERROR, "This is a test");
         }
     }
 }
