@@ -33,9 +33,9 @@ namespace ToastConfig
             return theHosts;
         }
 
-        public void saveHosts(List<string> theHosts)
+        public void saveHosts()
         {
-            string[] hostsToWrite = theHosts.ToArray();
+            string[] hostsToWrite = Hosts.ToArray();
 
             try
             {

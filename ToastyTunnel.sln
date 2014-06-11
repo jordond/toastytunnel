@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastTunnel", "ToastTunnel\ToastTunnel.csproj", "{8BFC8AEE-7995-4A1D-86F4-C5C045E69934}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastyTunnel", "ToastTunnel\ToastyTunnel.csproj", "{8BFC8AEE-7995-4A1D-86F4-C5C045E69934}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastConfig", "ToastConfig\ToastConfig.csproj", "{98191D50-E404-465C-BE54-5DFDDE63AE81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastyConfig", "ToastConfig\ToastyConfig.csproj", "{98191D50-E404-465C-BE54-5DFDDE63AE81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

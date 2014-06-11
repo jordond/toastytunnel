@@ -28,11 +28,12 @@ namespace ToastTunnel
         public MainWindow()
         {
             InitializeComponent();
+            cmbHosts.ItemsSource = _host.Hosts;
             isInit = true;
         }
         private bool canStart()
         {
-            if (txtUser.Text == ""  || cmbHosts.Text == null || txtPrivateKey.Text == "")
+            if (txtUser.Text == ""  || cmbHosts.Text == "" || txtPrivateKey.Text == "")
                 return false;
             if (chkTunnel.IsChecked == true)
             {
@@ -61,12 +62,29 @@ namespace ToastTunnel
 
         private void cmdStart_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(txtPrivateKey.Text))
+            if (File.Exists(txtPrivateKey.Text) && cmbHosts.Text != "")
             {
-                cmdStop.IsEnabled = startSession("-ssh -i " + txtPrivateKey.Text + " -D 12344 " + txtUser.Text + "@" + cmbHosts.Text);
+                _host.Hosts.Add(cmbHosts.Text);
+                _host.saveHosts();
+                cmdStop.IsEnabled = startSession(buildConnectionString());
             }
             else
-                MessageBox.Show("Private key could not be found.", "Error: cmdStart_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+            {
+                string error = cmbHosts.Text == "" ? "No host was entered, please select or type one in." : "The Private key could not be found";
+                MessageBox.Show(error, "Error: cmdStart_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string buildConnectionString()
+        {
+            string connectionString = "-ssh ";
+            connectionString += "-i " + txtPrivateKey.Text + " ";
+            if (chkTunnel.IsChecked == true)
+                connectionString += "-D " + txtTunnelPort.Text + " ";
+            if (txtUser.Text != "")
+                connectionString += txtUser.Text + "@" + cmbHosts.Text;
+
+            return connectionString;
         }
 
         private bool startSession(string sshCommand)
@@ -81,6 +99,7 @@ namespace ToastTunnel
                 info.Arguments = sshCommand;
                 info.FileName = _client;
                 info.WindowStyle = ProcessWindowStyle.Minimized;
+                info.UseShellExecute = false;
                 info.CreateNoWindow = true;
 
                 _plink.StartInfo = info;
