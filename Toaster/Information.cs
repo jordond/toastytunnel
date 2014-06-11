@@ -25,6 +25,22 @@ namespace Toaster
                 sortData();
         }
 
+        public void saveData()
+        {
+            try
+            {
+                if (File.Exists(savedData))
+                    File.Delete(savedData);
+
+                File.WriteAllLines(savedData, _data.ToArray());
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Information.cs - saveData() " + ex.Message);
+            }
+        }
+
         private List<string> loadData()
         {
             try
@@ -34,7 +50,7 @@ namespace Toaster
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception("Information.cs - loadData() " + ex.Message);
             }
         }
 
