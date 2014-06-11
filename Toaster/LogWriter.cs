@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using System.Diagnostics;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Toaster
 {
@@ -58,10 +60,30 @@ namespace Toaster
             h.AppendLine("Data File Location: ");
             h.AppendLine("Log File Location: " + Path.GetFullPath(logFilePath) + logFileName);
             h.AppendLine("Plink Location:" + Path.GetFullPath("File\\"));
-            h.AppendLine("Local IP: ");
+            h.AppendLine("Local IP: " + getIPAddress());
             h.AppendLine("#########################################################");
             h.AppendLine("");
             return h.ToString();
+        }
+
+        private string getIPAddress()
+        {
+            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+            {
+                IPHostEntry host;
+                string localIP = "";
+                host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        localIP = ip.ToString();
+                        break;
+                    }
+                }
+                return localIP;
+            }
+            return "Unvailable";
         }
     }
 }
