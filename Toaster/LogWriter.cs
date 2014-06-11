@@ -21,25 +21,31 @@ namespace Toaster
 
     public class LogWriter
     {
-        private string logFilePath = @"logs\";
+        private string logFilePath = "logs\\";
         private string logFileName = "toastytunnel.log";
         private string logFileFull;
          
         public LogWriter()
         {
-            logFileFull = logFilePath + logFileName;
-            if (!Directory.Exists(logFilePath))
-                Directory.CreateDirectory(logFilePath);
-            if (!File.Exists(logFileFull))
-                File.Create(logFileFull);
-            else
+            try
             {
-                File.Move(logFileFull, logFileFull + File.GetLastWriteTime(logFileFull));
-                File.Create(logFileFull);
+                logFileFull = logFilePath + logFileName;
+                if (!Directory.Exists(logFilePath))
+                    Directory.CreateDirectory(logFilePath);
+                if (!File.Exists(logFileFull))
+                    File.Create(logFileFull);
+                else
+                {
+                    if (File.Exists(logFileFull + ".old"))
+                        File.Delete(logFileFull + ".old");
+                    File.Move(logFileFull, logFileFull + ".old");
+                    File.Create(logFileFull);
+                }
             }
-
-            
-
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }            
         }
 
         public void writeLog(LogLevels logLevel, string message)
@@ -47,7 +53,8 @@ namespace Toaster
             try
             {
                 StringBuilder wl = new StringBuilder();
-                wl.AppendLine(getLogLevel(logLevel));
+                wl.Append(getLogLevel(logLevel));
+               
             }
             catch(Exception ex)
             {
