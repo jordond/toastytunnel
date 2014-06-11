@@ -37,7 +37,7 @@ namespace Toaster
 
                 return cs.ToString();
             }
-            set;
+            set{}
         }
 
         public List<Session> loadSessions()

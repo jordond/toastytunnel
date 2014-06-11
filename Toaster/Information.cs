@@ -9,20 +9,22 @@ namespace Toaster
 {
     public class Information
     {
-        private const string savedData = "files\\config";        
+        private const string savedData = "files\\data";        
         public List<Session> Sessions { get; set; }
         public List<Identity> Identities { get; set; }
+        public bool dataFileIsGood { get; set; }
         private List<string> _data;
 
         public Information()
         {
-            if (!File.Exists(savedData))
-                File.Create(savedData);
+            Sessions = new List<Session>();
+            Identities = new List<Identity>();
 
-            _data = loadData();
-
-            if (_data != null)
-                sortData();
+            if (File.Exists(savedData))
+            {
+                _data = loadData();
+                dataFileIsGood = sortData();                    
+            }
         }
 
         public void saveData()
@@ -54,9 +56,40 @@ namespace Toaster
             }
         }
 
-        private void sortData()
+        private bool sortData()
         {
+            try
+            {
+                for (int i = 0; i < _data.Count(); ++i)
+                {
+                    if (_data[i] == "%IDENTITY%")
+                    {
+                        Identity temp = new Identity();
+                        temp.ID = int.Parse(_data[i+=1]);
+                        temp.User = _data[i += 1];
+                        temp.Password = _data[i += 1];
+                        temp.PrivateKey = _data[i += 1];
+                        Identities.Add(temp);
 
+                    }
+                    else if (_data[i] == "%SESSION%")
+                    {
+                        Session temp = new Session();
+                        temp.ID = int.Parse(_data[i += 1]);
+                        temp.identity = Identities.Where(t => t.ID == int.Parse(_data[i += 1])).First();
+                        temp.Host = _data[i += 1];
+                        temp.IsLocal = bool.Parse(_data[i += 1]);
+                        temp.LocalPort = int.Parse(_data[i += 1]);
+                        temp.RemoteAddress = _data[i += 1];
+                        temp.RemotePort = int.Parse(_data[i += 1]);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
