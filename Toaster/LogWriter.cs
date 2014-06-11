@@ -68,7 +68,7 @@ namespace Toaster
         {
             try
             {
-                using (StreamWriter sw = new StreamWriter(logFileFull))
+                using (StreamWriter sw = new StreamWriter(logFileFull, true))
                 {
                     sw.WriteLine(line);
                 }
@@ -92,11 +92,10 @@ namespace Toaster
             h.AppendLine("Date: " + DateTime.Now.ToString());
             h.AppendLine("Working Directory: " + Directory.GetCurrentDirectory());
             h.AppendLine("Data File Location: ");
-            h.AppendLine("Log File Location: " + Path.GetFullPath(logFilePath) + logFileName);
-            h.AppendLine("Plink Location:" + Path.GetFullPath("File\\"));
+            h.AppendLine("Log File Location: " + logFilePath + logFileName);
+            h.AppendLine("Found Plink: " + File.Exists("files\\plink.exe"));
             h.AppendLine("Local IP: " + getIPAddress());
             h.AppendLine("#########################################################");
-            h.AppendLine("");
             return h.ToString();
         }
 
