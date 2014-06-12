@@ -37,9 +37,8 @@ namespace Toaster
         {
             foreach (Session s in _sessions.Values)
             {
-                Tunnel temp = new Tunnel(s.ConnectionString);
+                Tunnel temp = new Tunnel(s);
                 temp.ID = _tunnels.Count() + 1;
-                temp.createTunnelName(s);
                 temp.start();
                 _tunnels.Add(temp);
             }
@@ -49,7 +48,6 @@ namespace Toaster
             foreach(Tunnel t in _tunnels)
             {
                 t.stop();
-                Toast._logWriter.addEntry(LogLevels.INFO, "collapsing the " + t.Name + " tunnel");
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 
 namespace Toaster
 {
@@ -11,7 +12,8 @@ namespace Toaster
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public Process Instance { get; set; }        
+        public Process Instance { get; set; }
+        public Session instanceSession { get; set; }
         public string ConnectionString { get; set; }
         public bool isStarted { get; set; }
 
@@ -20,26 +22,20 @@ namespace Toaster
             get { return setStartInfo(); }
         }
 
-        public Tunnel(string connection)
+        public Tunnel(Session s)
         {
             Instance = new Process();
             ID = -1;
-            Name = "";
-            ConnectionString = connection;
+            instanceSession = s;
+            createTunnelName();
         }
-        
-        public void createTunnelName(Session s)
-        {
-            Name = s.identity.User + "@" + s.Host + (s.IsLocal == false ? " D:" + s.RemotePort
-                            : " L:" + s.LocalPort + ":" + s.RemoteAddress + ":" + s.RemotePort);
-        }
-
+           
         public void start()
         {
             try
             {
                 Instance.StartInfo = InstanceInfo;
-                Toast._logWriter.addEntry(LogLevels.INFO, "Digging the " + Name + " tunnel, with these specs: " + InstanceInfo.ToString());
+                Toast._logWriter.addEntry(LogLevels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isStarted = Instance.Start();
             }
             catch(Exception ex)
@@ -71,17 +67,43 @@ namespace Toaster
             }
         }
 
+        private void createTunnelName()
+        {
+            Name = instanceSession.identity.User + "@" + instanceSession.Host +
+                (instanceSession.IsLocal == false ? " D:" + instanceSession.RemotePort :
+                " L:" + instanceSession.LocalPort + ":" + instanceSession.RemoteAddress +
+                ":" + instanceSession.RemotePort);
+        }
+
         private ProcessStartInfo setStartInfo()
         {
             ProcessStartInfo temp = new ProcessStartInfo();
             temp.FileName = Toast.plinkLocation;
-            temp.Arguments = ConnectionString;
+            temp.Arguments = instanceSession.ConnectionString;
             temp.WindowStyle = ProcessWindowStyle.Minimized;
-#if RELEASE
+#if !DEBUG
             temp.UseShellExecute = false;
             temp.CreateNoWindow = true;
 #endif
             return temp;
+        }
+
+        private string tunnelSpecs()
+        {
+            StringBuilder s = new StringBuilder();
+            s.AppendLine("ID #: " + ID);
+            s.AppendLine("Name: " + Name);
+            s.AppendLine("Identity: ");
+            s.AppendLine("           User: " + instanceSession.identity.User);
+            s.AppendLine("           Host: " + instanceSession.Host);
+            s.AppendLine("          Ports: " + (instanceSession.IsLocal == false ? " D:" + 
+                        instanceSession.RemotePort : " L:" + instanceSession.LocalPort + ":" + 
+                        instanceSession.RemoteAddress + ":" + instanceSession.RemotePort));
+            s.AppendLine("            Key: " + instanceSession.identity.PrivateKey == "" ? "none" 
+                        : Path.GetFileName(instanceSession.identity.PrivateKey));
+            s.AppendLine("       Password: " + instanceSession.identity.Password == "" ? "none" : "yes");
+            s.AppendLine("Quick Connect: " + instanceSession.identity.Save);
+            return s.ToString();
         }
     }
 }
