@@ -52,9 +52,16 @@ namespace Toaster
         public void stop()
         {
             try
-            {
-                Toast._logWriter.addEntry(LogLevels.INFO, "Collapsing the " + Name + " tunnel.");
-                Instance.Kill();
+            {                
+                if (Instance.HasExited)
+                {
+                    Toast._logWriter.addEntry(LogLevels.WARNING, Name + " has already collapsed...");
+                }
+                else
+                {
+                    Toast._logWriter.addEntry(LogLevels.INFO, "Collapsing the " + Name + " tunnel.");
+                    Instance.Kill();
+                }
                 isStarted = false;
             }
             catch(Exception ex)
@@ -70,8 +77,10 @@ namespace Toaster
             temp.FileName = Toast.plinkLocation;
             temp.Arguments = ConnectionString;
             temp.WindowStyle = ProcessWindowStyle.Minimized;
+#if RELEASE
             temp.UseShellExecute = false;
             temp.CreateNoWindow = true;
+#endif
             return temp;
         }
     }
