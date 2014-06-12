@@ -40,10 +40,8 @@ namespace Toaster
             //_data.saveData();
             Tunnel temp = new Tunnel();
             temp.ID = _tunnels.Count() + 1;
-            temp.Name = _sessions[2].identity.User + "@" + _sessions[2].Host 
-                + (_sessions[2].IsLocal == true 
-                ? " L:" + _sessions[2].LocalPort + ":" + _sessions[2].RemoteAddress + ":" + _sessions[2].RemotePort
-                : " D:" + _sessions[2].RemotePort);
+            temp.createTunnelName(_sessions[2]);
+            string test = temp.Name;
         }
     }
 }

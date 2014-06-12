@@ -36,6 +36,12 @@ namespace Toaster
             set { } 
         }
         
+        public void createTunnelName(Session s)
+        {
+            Name = s.identity.User + "@" + s.Host + (s.IsLocal == false ? " D:" + s.RemotePort
+                            : " L:" + s.LocalPort + ":" + s.RemoteAddress + ":" + s.RemotePort);
+        }
+
         public void start()
         {
             try
