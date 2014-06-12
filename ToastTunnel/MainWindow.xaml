@@ -10,8 +10,8 @@
         <Label Content="Private Key:" HorizontalAlignment="Left" Margin="201,69,0,0" VerticalAlignment="Top"/>
         <TextBox Name="txtPrivateKey" HorizontalAlignment="Left" Height="23" Margin="277,69,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180" TextChanged="txtPrivateKey_TextChanged" IsReadOnly="True"/>
         <Button Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="462,68,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
-        <Button Name="cmdStart" Content="Start" HorizontalAlignment="Left" Margin="382,219,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="cmdStart_Click"/>
-        <Button x:Name="cmdStop" Content="Stop" HorizontalAlignment="Left" Margin="462,219,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="cmdStop_Click"/>
+        <Button Name="cmdStart" Content="Start" HorizontalAlignment="Left" Margin="382,219,0,0" VerticalAlignment="Top" Width="75" IsEnabled="True" Click="cmdStart_Click"/>
+        <Button x:Name="cmdStop" Content="Stop" HorizontalAlignment="Left" Margin="462,219,0,0" VerticalAlignment="Top" Width="75" IsEnabled="True" Click="cmdStop_Click"/>
         <Label Content="Host:" HorizontalAlignment="Left" Margin="201,110,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="cmbHosts" HorizontalAlignment="Left" Margin="277,114,0,0" VerticalAlignment="Top" Width="260" IsEditable="True" SelectionChanged="cmbHosts_SelectionChanged"/>
         <ListBox x:Name="lstSessions" HorizontalAlignment="Left" Height="231" Margin="10,10,0,0" VerticalAlignment="Top" Width="181"/>

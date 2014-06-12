@@ -25,8 +25,6 @@ namespace Toaster
                 _identities = _data.Identities;
                 _sessions = _data.Sessions;
                 _tunnels = new List<Tunnel>();
-
-                debug();
             }
             catch (Exception ex)
             {
@@ -35,15 +33,24 @@ namespace Toaster
             
         }
 
-        public void debug()
+        public void debugCreate()
         {
-            //_logWriter.addEntry(LogLevels.ERROR, "This is a test");
-            //_data.saveData();
-            Tunnel temp = new Tunnel(_sessions[1].ConnectionString);
-            temp.ID = _tunnels.Count() + 1;
-            temp.createTunnelName(_sessions[1]);
-            temp.start();
-            _tunnels.Add(temp);
+            foreach (Session s in _sessions.Values)
+            {
+                Tunnel temp = new Tunnel(s.ConnectionString);
+                temp.ID = _tunnels.Count() + 1;
+                temp.createTunnelName(s);
+                temp.start();
+                _tunnels.Add(temp);
+            }
+        }
+        public void debugKill()
+        {
+            foreach(Tunnel t in _tunnels)
+            {
+                t.stop();
+                Toast._logWriter.addEntry(LogLevels.INFO, "collapsing the " + t.Name + " tunnel");
+            }
         }
     }
 }

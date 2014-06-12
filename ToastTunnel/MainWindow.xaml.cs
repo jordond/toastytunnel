@@ -24,13 +24,13 @@ namespace ToastTunnel
         //private Host _host = new Host();
         private Process _plink;        
         public bool isInit = false;
-
+        Toast temp;
         public MainWindow()
         {
             InitializeComponent();
             //cmbHosts.ItemsSource = _host.Hosts;
             //debug
-            Toast temp = new Toast();
+            temp = new Toast();
             isInit = true;
         }
         private bool canStart()
@@ -63,17 +63,18 @@ namespace ToastTunnel
 
         private void cmdStart_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(txtPrivateKey.Text) && cmbHosts.Text != "")
-            {
-                //_host.Hosts.Add(cmbHosts.Text);
-                //_host.saveHosts();
-                cmdStop.IsEnabled = startSession(buildConnectionString());
-            }
-            else
-            {
-                string error = cmbHosts.Text == "" ? "No host was entered, please select or type one in." : "The Private key could not be found";
-                MessageBox.Show(error, "Error: cmdStart_Click", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            temp.debugCreate();
+            //if (File.Exists(txtPrivateKey.Text) && cmbHosts.Text != "")
+            //{
+            //    //_host.Hosts.Add(cmbHosts.Text);
+            //    //_host.saveHosts();
+            //    cmdStop.IsEnabled = startSession(buildConnectionString());
+            //}
+            //else
+            //{
+            //    string error = cmbHosts.Text == "" ? "No host was entered, please select or type one in." : "The Private key could not be found";
+            //    MessageBox.Show(error, "Error: cmdStart_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
 
         private string buildConnectionString()
@@ -116,8 +117,7 @@ namespace ToastTunnel
 
         private void cmdStop_Click(object sender, RoutedEventArgs e)
         {
-            _plink.Kill();
-            cmdStop.IsEnabled = false;
+            temp.debugKill();
         }
 
         #region cmdStart Triggers
