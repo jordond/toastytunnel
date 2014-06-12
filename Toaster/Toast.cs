@@ -10,7 +10,7 @@ namespace Toaster
     {
         private Dictionary<int,Identity> _identities;
         private Dictionary<int,Session> _sessions;
-        private List<Tunnel> _tunnels;
+        private List<Tunnel> _tunnels = new List<Tunnel>();
         public static LogWriter _logWriter;
         public static Information _data;
 
@@ -40,7 +40,10 @@ namespace Toaster
             //_data.saveData();
             Tunnel temp = new Tunnel();
             temp.ID = _tunnels.Count() + 1;
-            //temp.Name = _sessions.
+            temp.Name = _sessions[2].identity.User + "@" + _sessions[2].Host 
+                + (_sessions[2].IsLocal == true 
+                ? " L:" + _sessions[2].LocalPort + ":" + _sessions[2].RemoteAddress + ":" + _sessions[2].RemotePort
+                : " D:" + _sessions[2].RemotePort);
         }
     }
 }
