@@ -91,17 +91,18 @@ namespace Toaster
         private string tunnelSpecs()
         {
             StringBuilder s = new StringBuilder();
+            s.AppendLine("");
             s.AppendLine("ID #: " + ID);
             s.AppendLine("Name: " + Name);
             s.AppendLine("Identity: ");
-            s.AppendLine("           User: " + instanceSession.identity.User);
-            s.AppendLine("           Host: " + instanceSession.Host);
-            s.AppendLine("          Ports: " + (instanceSession.IsLocal == false ? " D:" + 
+            s.AppendLine("User: " + instanceSession.identity.User);
+            s.AppendLine("Host: " + instanceSession.Host);
+            s.AppendLine("Ports: " + (instanceSession.IsLocal == false ? " D:" + 
                         instanceSession.RemotePort : " L:" + instanceSession.LocalPort + ":" + 
                         instanceSession.RemoteAddress + ":" + instanceSession.RemotePort));
-            s.AppendLine("            Key: " + instanceSession.identity.PrivateKey == "" ? "none" 
-                        : Path.GetFileName(instanceSession.identity.PrivateKey));
-            s.AppendLine("       Password: " + instanceSession.identity.Password == "" ? "none" : "yes");
+            s.AppendLine(instanceSession.identity.PrivateKey == "" ? "Key: none" 
+                        : "Key: " + Path.GetFileName(instanceSession.identity.PrivateKey));
+            s.AppendLine("Password: " + instanceSession.identity.Password == "" ? "Password: none" : "Password: yes");
             s.AppendLine("Quick Connect: " + instanceSession.identity.Save);
             return s.ToString();
         }
