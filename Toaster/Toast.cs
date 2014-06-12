@@ -24,6 +24,7 @@ namespace Toaster
                 _data = new Information();
                 _identities = _data.Identities;
                 _sessions = _data.Sessions;
+                _tunnels = new List<Tunnel>();
 
                 debug();
             }
@@ -38,10 +39,11 @@ namespace Toaster
         {
             //_logWriter.addEntry(LogLevels.ERROR, "This is a test");
             //_data.saveData();
-            Tunnel temp = new Tunnel();
+            Tunnel temp = new Tunnel(_sessions[1].ConnectionString);
             temp.ID = _tunnels.Count() + 1;
-            temp.createTunnelName(_sessions[2]);
-            string test = temp.Name;
+            temp.createTunnelName(_sessions[1]);
+            temp.start();
+            _tunnels.Add(temp);
         }
     }
 }

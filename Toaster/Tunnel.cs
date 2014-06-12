@@ -15,25 +15,17 @@ namespace Toaster
         public string ConnectionString { get; set; }
         public bool isStarted { get; set; }
 
-        public Tunnel()
+        public ProcessStartInfo InstanceInfo
         {
-            ID = -1;
-            Name = "";
-            ConnectionString = "";
+            get { return setStartInfo(); }
         }
 
-        public ProcessStartInfo InstanceInfo 
+        public Tunnel(string connection)
         {
-            get
-            {
-                InstanceInfo.FileName = Toast.plinkLocation;
-                InstanceInfo.Arguments = ConnectionString;
-                InstanceInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                InstanceInfo.UseShellExecute = false;
-                InstanceInfo.CreateNoWindow = true;
-                return InstanceInfo;
-            }
-            set { } 
+            Instance = new Process();
+            ID = -1;
+            Name = "";
+            ConnectionString = connection;
         }
         
         public void createTunnelName(Session s)
@@ -70,6 +62,17 @@ namespace Toaster
                 Toast._logWriter.addEntry(LogLevels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
                 throw new Exception("Tunnel.cs - stop() - " + ex.Message);
             }
+        }
+
+        private ProcessStartInfo setStartInfo()
+        {
+            ProcessStartInfo temp = new ProcessStartInfo();
+            temp.FileName = Toast.plinkLocation;
+            temp.Arguments = ConnectionString;
+            temp.WindowStyle = ProcessWindowStyle.Minimized;
+            temp.UseShellExecute = false;
+            temp.CreateNoWindow = true;
+            return temp;
         }
     }
 }
