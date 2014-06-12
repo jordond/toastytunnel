@@ -79,7 +79,7 @@ namespace Toaster
             h.AppendLine(" Toasty Tunnel - Easy SSH Tunnel using PuTTY and Plink");
             h.AppendLine("           Jordon de Hoog - Hooger 2014");
             h.AppendLine("#########################################################");
-            h.AppendLine("Library Version: " + FileVersionInfo.GetVersionInfo(logFileFull).FileVersion);
+            h.AppendLine("Library Version: " + FileVersionInfo.GetVersionInfo(logFileFull).ProductVersion);
             h.AppendLine("Tunneler Version: ");
             h.AppendLine("Date: " + DateTime.Now.ToString());
             h.AppendLine("Working Directory: " + Directory.GetCurrentDirectory());

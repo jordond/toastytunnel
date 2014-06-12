@@ -19,16 +19,24 @@ namespace Toaster
         {
             Sessions = new List<Session>();
             Identities = new List<Identity>();
-            
+            _data = new List<string>();
+
             if (File.Exists(savedData))
             {
                 _data = loadDataFromFile();
-                dataFileIsGood = sortData();                    
+                Toast._logWriter.addEntry(LogLevels.INFO, "Read in " + _data.Count() + " lines from the data file.");
+                dataFileIsGood = sortData();
+
+                if (dataFileIsGood == false)
+                    Toast._logWriter.addEntry(LogLevels.WARNING, "Error reading in data file, using blank file instead");
+                else
+                    Toast._logWriter.addEntry(LogLevels.INFO, "Successfully read in " + Identities.Count() + " identities, and " + Sessions.Count() + " sessions.");
             }
             else
             {
                 dataFileIsGood = null;
                 File.Create(savedData).Dispose();
+                Toast._logWriter.addEntry(LogLevels.WARNING, "Data file didn't exist and was created, missing or first run?");
             }
         }
 
@@ -37,10 +45,14 @@ namespace Toaster
             try
             {
                 if (File.Exists(savedData))
+                {
                     File.Delete(savedData);
+                    Toast._logWriter.addEntry(LogLevels.INFO, "Information.cs - SaveData(): Deleting previous data file before saving.");
+                }
 
                 loadDataFromLists();
                 File.WriteAllLines(savedData, _data.ToArray());
+                Toast._logWriter.addEntry(LogLevels.INFO, "Infomation.cs - SaveData(): Writing " + _data.Count() + " lines to data file.");
 
             }
             catch (Exception ex)
@@ -48,9 +60,7 @@ namespace Toaster
                 Toast._logWriter.addEntry(LogLevels.ERROR, "Information.cs - SaveData() " + ex.Message);
                 throw new Exception("Information.cs - saveData() " + ex.Message);
             }
-        }
-
-        
+        }       
 
         private List<string> loadDataFromFile()
         {
@@ -128,8 +138,9 @@ namespace Toaster
                 }
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Toast._logWriter.addEntry(LogLevels.ERROR, "Information.cs - SortData() - " + ex.Message); 
                 return false;
             }
         }
