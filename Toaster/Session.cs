@@ -28,7 +28,7 @@ namespace Toaster
                 if (File.Exists(identity.PrivateKey))
                     cs.Append("-i " + identity.PrivateKey + " ");
                 if (IsLocal)
-                    cs.Append("-L " + LocalPort + ":" + RemoteAddress + ":" + RemotePort);
+                    cs.Append("-L " + LocalPort + ":" + RemoteAddress + ":" + RemotePort + " ");
                 else
                     cs.Append("-D " + RemotePort + " ");
                 cs.Append(identity.User + "@" + Host + " ");
