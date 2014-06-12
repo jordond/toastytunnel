@@ -17,7 +17,9 @@ namespace Toaster
 
         public Tunnel()
         {
-            
+            ID = -1;
+            Name = "";
+            ConnectionString = "";
         }
 
         public ProcessStartInfo InstanceInfo 
@@ -30,8 +32,8 @@ namespace Toaster
                 InstanceInfo.UseShellExecute = false;
                 InstanceInfo.CreateNoWindow = true;
                 return InstanceInfo;
-            } 
-            set; 
+            }
+            set { } 
         }
         
         public void start()

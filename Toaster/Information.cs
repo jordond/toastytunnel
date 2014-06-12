@@ -10,15 +10,15 @@ namespace Toaster
     public class Information
     {
         private const string savedData = "files\\data";        
-        public List<Session> Sessions { get; set; }
-        public List<Identity> Identities { get; set; }
+        public Dictionary<int, Session> Sessions { get; set; }
+        public Dictionary<int, Identity> Identities { get; set; }
         public bool? dataFileIsGood { get; set; }
         public List<string> _data { get; set; }
 
         public Information()
         {
-            Sessions = new List<Session>();
-            Identities = new List<Identity>();
+            Sessions = new Dictionary<int, Session>();
+            Identities = new Dictionary<int, Identity>();
             _data = new List<string>();
 
             if (File.Exists(savedData))
@@ -80,7 +80,7 @@ namespace Toaster
         {
             _data.Clear();
 
-            foreach (Identity ident in Identities)
+            foreach (Identity ident in Identities.Values)
             {
                 if(ident.Save)
                 {
@@ -92,7 +92,7 @@ namespace Toaster
                 }
             }
 
-            foreach (Session s in Sessions)
+            foreach (Session s in Sessions.Values)
             {
                 _data.Add("%SESSION%");
                 _data.Add(s.ID.ToString());
@@ -118,7 +118,7 @@ namespace Toaster
                         temp.User = _data[i += 1];
                         temp.Password = _data[i += 1];
                         temp.PrivateKey = _data[i += 1];
-                        Identities.Add(temp);
+                        Identities.Add(temp.ID, temp);
                         Toast._logWriter.addEntry(LogLevels.INFO, "Found identity: " + temp.User);
 
                     }
@@ -126,13 +126,13 @@ namespace Toaster
                     {
                         Session temp = new Session();
                         temp.ID = int.Parse(_data[i += 1]);
-                        temp.identity = Identities.Where(t => t.ID == int.Parse(_data[i += 1])).First();
+                        temp.identity = Identities[int.Parse(_data[i += 1])];
                         temp.Host = _data[i += 1];
                         temp.IsLocal = bool.Parse(_data[i += 1]);
                         temp.LocalPort = int.Parse(_data[i += 1]);
                         temp.RemoteAddress = _data[i += 1];
                         temp.RemotePort = int.Parse(_data[i += 1]);
-                        Sessions.Add(temp);
+                        Sessions.Add(temp.ID, temp);
                         Toast._logWriter.addEntry(LogLevels.INFO, "Found session: " + temp.identity.User + "@" + temp.Host);
                     }
                 }
