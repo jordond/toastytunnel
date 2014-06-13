@@ -14,13 +14,44 @@ namespace Toaster
         public string Name { get; set; }
         public Identity identity { get; set; }
         public string Host { get; set; }
+        public int Port { get; set; }
         public int LocalPort { get; set; }
         public string RemoteAddress { get; set; }
         public int RemotePort { get; set; }
-        public string ConnectionString { get; set; }        
-        public bool isOpen { get; set; }
+        public string ConnectionString
+        {
+            get
+            {
+                StringBuilder cs = new StringBuilder();
+                cs.Append("-ssh ");
+                if (File.Exists(identity.PrivateKey))
+                    cs.Append("-i " + identity.PrivateKey + " ");
+                if (LocalPort != null)
+                    cs.Append("-L " + LocalPort + ":" + RemoteAddress + ":" + RemotePort + " ");
+                else
+                    cs.Append("-D " + RemotePort + " ");
+                cs.Append(identity.User + "@" + Host + " ");
+                if (Port != 22)
+                    cs.Append("-p " + Port + " ");
+                if (!File.Exists(identity.PrivateKey) || identity.Password != "")
+                    cs.Append("-pw " + identity.Password);
+
+                return cs.ToString();
+            }
+            set { }
+        }        
         public bool autoStart { get; set; }
-        public Process Instance { get; set; }
+        public bool isOpen
+        {
+            get
+            {
+                if (Instance != null)
+                    return Instance.HasExited;
+                return false;
+            }
+            set { }
+        }
+        public Process Instance { get; set; }        
         public ProcessStartInfo InstanceInfo
         {
             get 
@@ -40,7 +71,6 @@ namespace Toaster
         public Tunnel()
         {
             Instance = new Process();
-            RemotePort = -1;
         }
 
         //per tunnel start
@@ -82,7 +112,7 @@ namespace Toaster
             }
         }
 
-        public string tunnelSpecs()
+        private string tunnelSpecs()
         {
             StringBuilder s = new StringBuilder();
             s.AppendLine("");
@@ -90,7 +120,7 @@ namespace Toaster
             s.AppendLine("Identity: ");
             s.AppendLine("User: " + identity.User);
             s.AppendLine("Host: " + Host);
-            s.AppendLine("Ports: " + (LocalPort == -1 ? " D:" +
+            s.AppendLine("Ports: " + (LocalPort == null ? " D:" +
                         RemotePort : " L:" + LocalPort + ":" +
                         RemoteAddress + ":" + RemotePort));
             s.AppendLine(identity.PrivateKey == "" ? "Key: none"
