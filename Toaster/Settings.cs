@@ -18,7 +18,6 @@ namespace Toaster
         {
             Tunnels = new List<Tunnel>();
             Identities = new List<Identity>();
-            Toast._logWriter.addEntry(LogLevels.DEBUG, "Settings.cs - created settings object.");
         }
         
         public void saveSettings()
@@ -38,7 +37,11 @@ namespace Toaster
 
         public void Save(string filename = DEFAULT_FILENAME)
         {
-            File.WriteAllText(filename, (new JavaScriptSerializer()).Serialize(this));
+            string temp = new JavaScriptSerializer().Serialize(this);
+            byte[] bytes = new byte[temp.Length * sizeof(char)];
+            System.Buffer.BlockCopy(temp.ToCharArray(), 0, bytes, 0, bytes.Length);
+            
+            File.WriteAllText(filename, Convert.ToBase64String(bytes));
         }
 
         public static void Save(T pSettings, string filename = DEFAULT_FILENAME)
@@ -49,8 +52,13 @@ namespace Toaster
         public static T Load(string fileName = DEFAULT_FILENAME)
         {
             T t = new T();
+            byte[] bytes = Convert.FromBase64String(File.ReadAllText(fileName));
+            char[] chars = new char[bytes.Length / sizeof(char)];
+            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
+            string temp = new string(chars);
+
             if (File.Exists(fileName))
-                t = (new JavaScriptSerializer()).Deserialize<T>(File.ReadAllText(fileName));
+                t = (new JavaScriptSerializer()).Deserialize<T>(temp);
             return t;
         }
     }
