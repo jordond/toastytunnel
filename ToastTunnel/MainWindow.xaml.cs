@@ -14,21 +14,23 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.IO;
-using ToastConfig;
+using Toaster;
 
 namespace ToastTunnel
 {    
     public partial class MainWindow : Window
     {
         private const string _client = "files\\plink.exe";
-        private Host _host = new Host();
+        //private Host _host = new Host();
         private Process _plink;        
         public bool isInit = false;
-
+        Toast temp;
         public MainWindow()
         {
             InitializeComponent();
-            cmbHosts.ItemsSource = _host.Hosts;
+            //cmbHosts.ItemsSource = _host.Hosts;
+            //debug
+            temp = new Toast();
             isInit = true;
         }
         private bool canStart()
@@ -36,8 +38,8 @@ namespace ToastTunnel
             if (txtUser.Text == ""  || cmbHosts.Text == "" || txtPrivateKey.Text == "")
                 return false;
             
-            if (txtTunnelPort.Text == "")
-                return false;
+            //if (txtTunnelPort.Text == "")
+            //    return false;
             
             return true;
         }
@@ -61,24 +63,25 @@ namespace ToastTunnel
 
         private void cmdStart_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(txtPrivateKey.Text) && cmbHosts.Text != "")
-            {
-                _host.Hosts.Add(cmbHosts.Text);
-                _host.saveHosts();
-                cmdStop.IsEnabled = startSession(buildConnectionString());
-            }
-            else
-            {
-                string error = cmbHosts.Text == "" ? "No host was entered, please select or type one in." : "The Private key could not be found";
-                MessageBox.Show(error, "Error: cmdStart_Click", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            temp.debugCreate();
+            //if (File.Exists(txtPrivateKey.Text) && cmbHosts.Text != "")
+            //{
+            //    //_host.Hosts.Add(cmbHosts.Text);
+            //    //_host.saveHosts();
+            //    cmdStop.IsEnabled = startSession(buildConnectionString());
+            //}
+            //else
+            //{
+            //    string error = cmbHosts.Text == "" ? "No host was entered, please select or type one in." : "The Private key could not be found";
+            //    MessageBox.Show(error, "Error: cmdStart_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
 
         private string buildConnectionString()
         {
             string connectionString = "-ssh ";
             connectionString += "-i " + txtPrivateKey.Text + " ";
-            connectionString += "-D " + txtTunnelPort.Text + " ";
+            //connectionString += "-D " + txtTunnelPort.Text + " ";
             if (txtUser.Text != "")
                 connectionString += txtUser.Text + "@" + cmbHosts.Text;
 
@@ -114,8 +117,7 @@ namespace ToastTunnel
 
         private void cmdStop_Click(object sender, RoutedEventArgs e)
         {
-            _plink.Kill();
-            cmdStop.IsEnabled = false;
+            temp.debugKill();
         }
 
         #region cmdStart Triggers
@@ -130,13 +132,7 @@ namespace ToastTunnel
             if (isInit)
                 cmdStart.IsEnabled = canStart();
         }
-
-        private void txtTunnelPort_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (isInit)
-                cmdStart.IsEnabled = canStart();
-        }
-
+        
         private void cmbHosts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (isInit)
