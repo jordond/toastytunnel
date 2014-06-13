@@ -10,13 +10,13 @@ namespace Toaster
 {
     public class Settings : State<Settings>
     {
-        public List<Session> Sessions { get; set; }
+        public List<Tunnel> Tunnels { get; set; }
         public List<Identity> Identities { get; set; }
         public string Plink { get; set; }
 
         public Settings()
         {
-            Sessions = new List<Session>();
+            Tunnels = new List<Tunnel>();
             Identities = new List<Identity>();
             Toast._logWriter.addEntry(LogLevels.DEBUG, "Settings.cs - created settings object.");
         }
@@ -25,8 +25,8 @@ namespace Toaster
         {
             foreach (Identity i in this.Identities)
                 Toast._logWriter.addEntry(LogLevels.INFO, "Saving identity: " + i.Name);
-            foreach (Session s in this.Sessions)
-                Toast._logWriter.addEntry(LogLevels.INFO, "Saving session: " + s.Name);
+            foreach (Tunnel t in this.Tunnels)
+                Toast._logWriter.addEntry(LogLevels.INFO, "Saving tunnel: " + t.Name);
 
             this.Save();
         }

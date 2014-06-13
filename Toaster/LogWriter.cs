@@ -72,6 +72,7 @@ namespace Toaster
             }            
         }
 
+        #region Log writing helpers
         private string logHeader()
         {
             StringBuilder h = new StringBuilder();
@@ -122,5 +123,6 @@ namespace Toaster
             }
             return "Unvailable";
         }
+        #endregion
     }
 }
