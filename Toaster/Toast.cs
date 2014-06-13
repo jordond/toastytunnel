@@ -11,7 +11,7 @@ namespace Toaster
         private List<Identity> _identities = new List<Identity>();
         private List<Session> _sessions = new List<Session>();
         private List<Tunnel> _tunnels = new List<Tunnel>();
-        private Settings settings;
+        public Settings settings;
         public static LogWriter _logWriter;
 
         public const string plinkLocation = @"files\plink.exe"; 
@@ -22,6 +22,7 @@ namespace Toaster
             {
                 _logWriter = new LogWriter();
                 loadSettings();
+                settings.saveSettings();
             }
             catch (Exception ex)
             {
@@ -51,13 +52,11 @@ namespace Toaster
         private void loadSettings()
         {
             settings = Settings.Load();
-            _identities = settings.Identities;
-            _sessions = settings.Sessions;
 
-            Toast._logWriter.addEntry(LogLevels.INFO, "Found " + _identities.Count() + " identities, and " + _sessions.Count() + " sessions.");
-            foreach (Identity i in _identities)
+            Toast._logWriter.addEntry(LogLevels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Sessions.Count() + " sessions.");
+            foreach (Identity i in settings.Identities)
                 Toast._logWriter.addEntry(LogLevels.INFO, "Found identity: " + i.Name);
-            foreach (Session s in _sessions)
+            foreach (Session s in settings.Sessions)
                 Toast._logWriter.addEntry(LogLevels.INFO, "Found session: " + s.Name);
         }
     }

@@ -20,6 +20,16 @@ namespace Toaster
             Identities = new List<Identity>();
             Toast._logWriter.addEntry(LogLevels.DEBUG, "Settings.cs - created settings object.");
         }
+        
+        public void saveSettings()
+        {
+            foreach (Identity i in this.Identities)
+                Toast._logWriter.addEntry(LogLevels.INFO, "Saving identity: " + i.Name);
+            foreach (Session s in this.Sessions)
+                Toast._logWriter.addEntry(LogLevels.INFO, "Saving session: " + s.Name);
+
+            this.Save();
+        }
     }
 
     public class State<T> where T : new()
