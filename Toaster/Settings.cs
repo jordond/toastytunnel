@@ -46,7 +46,11 @@ namespace Toaster
 
         public static void Save(T pSettings, string filename = DEFAULT_FILENAME)
         {
-            File.WriteAllText(filename, (new JavaScriptSerializer()).Serialize(pSettings));
+            string temp = new JavaScriptSerializer().Serialize(pSettings);
+            byte[] bytes = new byte[temp.Length * sizeof(char)];
+            System.Buffer.BlockCopy(temp.ToCharArray(), 0, bytes, 0, bytes.Length);
+
+            File.WriteAllText(filename, Convert.ToBase64String(bytes));
         }
 
         public static T Load(string fileName = DEFAULT_FILENAME)
@@ -55,10 +59,9 @@ namespace Toaster
             byte[] bytes = Convert.FromBase64String(File.ReadAllText(fileName));
             char[] chars = new char[bytes.Length / sizeof(char)];
             System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            string temp = new string(chars);
-
+            
             if (File.Exists(fileName))
-                t = (new JavaScriptSerializer()).Deserialize<T>(temp);
+                t = (new JavaScriptSerializer()).Deserialize<T>(new string(chars));
             return t;
         }
     }
