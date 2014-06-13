@@ -9,6 +9,7 @@ namespace Toaster
 {
     public class Information
     {
+        //no longer needed
         private const string savedData = "files\\data";        
         public Dictionary<int, Session> Sessions { get; set; }
         public Dictionary<int, Identity> Identities { get; set; }

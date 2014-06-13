@@ -9,7 +9,8 @@ namespace Toaster
 {
     public class Session
     {
-        public int ID { get; set; }
+        public int ID { get; set; } //delete
+        public string Name { get; set; }
         public Identity identity { get; set; }
         public string Host { get; set; }
         public bool IsLocal { get; set; }

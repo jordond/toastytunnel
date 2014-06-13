@@ -8,7 +8,8 @@ namespace Toaster
 {
     public class Identity
     {
-        public int ID { get; set; }
+        public int ID { get; set; } //delete
+        public string Name { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
         public string PrivateKey { get; set; }

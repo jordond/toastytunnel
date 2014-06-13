@@ -18,6 +18,7 @@ namespace Toaster
         {
             Sessions = new List<Session>();
             Identities = new List<Identity>();
+            Toast._logWriter.addEntry(LogLevels.DEBUG, "Settings.cs - created settings object.");
         }
     }
 
