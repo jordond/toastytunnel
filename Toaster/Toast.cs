@@ -42,7 +42,7 @@ namespace Toaster
             settings = Settings.Load();
             plinkLocation = settings.Plink;
 
-            Toast._logWriter.addEntry(LogLevels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Sessions.Count() + " sessions.");
+            Toast._logWriter.addEntry(LogLevels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Tunnels.Count() + " sessions.");
             foreach (Identity i in settings.Identities)
                 Toast._logWriter.addEntry(LogLevels.INFO, "Found identity: " + i.Name);
             foreach (Tunnel t in settings.Tunnels)

@@ -26,7 +26,7 @@ namespace Toaster
                 cs.Append("-ssh ");
                 if (File.Exists(identity.PrivateKey))
                     cs.Append("-i " + identity.PrivateKey + " ");
-                if (LocalPort != null)
+                if (LocalPort != 0)
                     cs.Append("-L " + LocalPort + ":" + RemoteAddress + ":" + RemotePort + " ");
                 else
                     cs.Append("-D " + RemotePort + " ");
@@ -120,7 +120,7 @@ namespace Toaster
             s.AppendLine("Identity: ");
             s.AppendLine("User: " + identity.User);
             s.AppendLine("Host: " + Host);
-            s.AppendLine("Ports: " + (LocalPort == null ? " D:" +
+            s.AppendLine("Ports: " + (LocalPort == 0 ? " D:" +
                         RemotePort : " L:" + LocalPort + ":" +
                         RemoteAddress + ":" + RemotePort));
             s.AppendLine(identity.PrivateKey == "" ? "Key: none"
