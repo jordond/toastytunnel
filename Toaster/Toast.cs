@@ -8,13 +8,10 @@ namespace Toaster
 {
     public class Toast
     {
-        private List<Identity> _identities = new List<Identity>();
-        private List<Session> _sessions = new List<Session>();
-        private List<Tunnel> _tunnels = new List<Tunnel>();
-        public Settings settings;
+        public Settings settings { get; set; }
+        public List<Tunnel> _tunnels = new List<Tunnel>();        
         public static LogWriter _logWriter;
-
-        public const string plinkLocation = @"files\plink.exe"; 
+        public static string plinkLocation; 
 
         public Toast()
         {
@@ -33,7 +30,7 @@ namespace Toaster
 
         public void debugCreate()
         {
-            foreach (Session s in _sessions)
+            foreach (Session s in settings.Sessions)
             {
                 Tunnel temp = new Tunnel(s);
                 temp.ID = _tunnels.Count() + 1;
@@ -52,6 +49,7 @@ namespace Toaster
         private void loadSettings()
         {
             settings = Settings.Load();
+            plinkLocation = settings.Plink;
 
             Toast._logWriter.addEntry(LogLevels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Sessions.Count() + " sessions.");
             foreach (Identity i in settings.Identities)

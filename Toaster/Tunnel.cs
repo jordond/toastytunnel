@@ -10,7 +10,6 @@ namespace Toaster
 {
     public class Tunnel
     {
-        public int ID { get; set; }
         public string Name { get; set; }
         public Process Instance { get; set; }
         public Session instanceSession { get; set; }
