@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using Logger;
 
 namespace Toaster
 {
     public class Tunnel
     {
+        private Log logger = Log.Instance;
         public int ID { get; set; }
         public string Name { get; set; }
         public Identity identity { get; set; }
@@ -79,12 +81,12 @@ namespace Toaster
             try
             {
                 Instance.StartInfo = InstanceInfo;
-                Toast._logWriter.addEntry(LogLevels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
+                logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();
             }
             catch (Exception ex)
             {
-                Toast._logWriter.addEntry(LogLevels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
+                logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
                 throw new Exception("Tunnel.cs - start() - " + ex.Message);
             }
         }
@@ -96,18 +98,18 @@ namespace Toaster
             {
                 if (Instance.HasExited)
                 {
-                    Toast._logWriter.addEntry(LogLevels.WARNING, Name + " has already collapsed...");
+                    logger.Add(Levels.WARNING, Name + " has already collapsed...");
                 }
                 else
                 {
-                    Toast._logWriter.addEntry(LogLevels.INFO, "Collapsing the " + Name + " tunnel.");
+                    logger.Add(Levels.INFO, "Collapsing the " + Name + " tunnel.");
                     Instance.Kill();
                 }
                 isOpen = false;
             }
             catch (Exception ex)
             {
-                Toast._logWriter.addEntry(LogLevels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
+                logger.Add(Levels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
                 throw new Exception("Tunnel.cs - stop() - " + ex.Message);
             }
         }

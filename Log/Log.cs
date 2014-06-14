@@ -32,7 +32,7 @@ namespace Logger
             }
         }
 
-        public static Log Instance
+        public static Log Instance 
         {
             get
             {
@@ -46,7 +46,9 @@ namespace Logger
 
         public Log()
         {
-            createLogfile();
+            Path = @"logs\";
+            Filename = DateTime.Now.ToString("dd_MM_yyyy") + ".log";
+            Create();
             Write(Header());
         }
 
@@ -68,7 +70,7 @@ namespace Logger
             }
         }
 
-        private void createLogfile()
+        private void Create()
         {
             try
             {
@@ -97,7 +99,6 @@ namespace Logger
             h.AppendLine(" Toasty Tunnel - Easy SSH Tunnel using PuTTY and Plink");
             h.AppendLine("           Jordon de Hoog - Hooger 2014");
             h.AppendLine("#########################################################");
-            h.AppendLine("Library Version: " + FileVersionInfo.GetVersionInfo(fullPath).ProductVersion);
             h.AppendLine("Tunneler Version: ");
             h.AppendLine("Date: " + DateTime.Now.ToString());
             h.AppendLine("Working Directory: " + Directory.GetCurrentDirectory());
@@ -117,7 +118,7 @@ namespace Logger
                 case Levels.WARNING:    return "WARNING: ";
                 case Levels.ERROR:      return "ERROR: ";
                 case Levels.DEBUG:      return "DEBUG: ";
-                default:                return "NONE: ";
+                default:                return "";
             }
         }
 
