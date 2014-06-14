@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Web.Script.Serialization;
 
+using Logger;
+
 namespace Toaster
 {
     public class Settings : State<Settings>
@@ -13,6 +15,7 @@ namespace Toaster
         public List<Tunnel> Tunnels { get; set; }
         public List<Identity> Identities { get; set; }
         public string Plink { get; set; }
+        private Log  logger = Log.Instance;
 
         public Settings()
         {
@@ -23,9 +26,9 @@ namespace Toaster
         public void saveSettings()
         {
             foreach (Identity i in this.Identities)
-                Toast._logWriter.addEntry(LogLevels.INFO, "Saving identity: " + i.Name);
+                logger.Add(Levels.INFO, "Saving identity: " + i.Name);
             foreach (Tunnel t in this.Tunnels)
-                Toast._logWriter.addEntry(LogLevels.INFO, "Saving tunnel: " + t.Name);
+                logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
 
             this.Save();
         }
@@ -56,12 +59,15 @@ namespace Toaster
         public static T Load(string fileName = DEFAULT_FILENAME)
         {
             T t = new T();
-            byte[] bytes = Convert.FromBase64String(File.ReadAllText(fileName));
-            char[] chars = new char[bytes.Length / sizeof(char)];
-            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            
             if (File.Exists(fileName))
+            {
+                byte[] bytes = Convert.FromBase64String(File.ReadAllText(fileName));
+                char[] chars = new char[bytes.Length / sizeof(char)];
+                System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
+
+
                 t = (new JavaScriptSerializer()).Deserialize<T>(new string(chars));
+            }
             return t;
         }
     }
