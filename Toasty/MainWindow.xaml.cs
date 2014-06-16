@@ -20,7 +20,6 @@ namespace Toasty
     public partial class MainWindow : Window
     {
         public static Toast _toaster;
-        public Settings _settings;
 
         public MainWindow()
         {
@@ -29,7 +28,6 @@ namespace Toasty
             {
                 _toaster = Toast.Instance;
                 
-                _settings = _toaster.settings;
                 lstTunnels.ItemsSource = _toaster.settings.Tunnels;
 
             }
@@ -37,11 +35,6 @@ namespace Toasty
             {
                 MessageBox.Show("Error Initializing: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        public void updateList()
-        {
-            _settings = _toaster.settings;
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
@@ -57,7 +50,7 @@ namespace Toasty
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
-            _toaster.settings.saveSettings();
+            _toaster.saveSettings();
         }
     }
 }

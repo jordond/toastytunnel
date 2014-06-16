@@ -5,7 +5,28 @@
     <Grid>
         <GroupBox Header="Identity" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="250" Width="362">
             <Grid>
-                <ListBox x:Name="lstIdentities" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="340"/>
+                <ListView x:Name="lstIdentities" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="340">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Height" Value="25" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="65" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="User" Width="65" DisplayMemberBinding="{Binding User}" />
+                            <GridViewColumn Header="Password" Width="57" DisplayMemberBinding="{Binding Password}" />
+                            <GridViewColumn Header="Key" Width="65" DisplayMemberBinding="{Binding PrivateKey}" />
+                            <GridViewColumn Header="Delete" Width="45">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Height="20" Width="20" Padding="0" Margin="0" Content="x" Click="Delete" CommandParameter="{Binding}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <Label Content="Nickname: " HorizontalAlignment="Left" Margin="0,142,0,0" VerticalAlignment="Top"/>
                 <TextBox Name="txtIName" HorizontalAlignment="Left" Height="23" Margin="74,145,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90"/>
                 <Label Content="Username: " HorizontalAlignment="Left" Margin="0,170,0,0" VerticalAlignment="Top"/>

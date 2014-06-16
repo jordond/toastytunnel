@@ -4,7 +4,7 @@
         Title="Toasty Tunnels" Height="289.443" Width="396.701">
     <Grid>
         <Label Content="Tunnels:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
-        <ListView x:Name="lstTunnels" HorizontalAlignment="Left" Height="198" Margin="10,26,0,0" VerticalAlignment="Top" Width="367">
+        <ListView x:Name="lstTunnels" HorizontalAlignment="Left" Height="187" Margin="10,26,0,0" VerticalAlignment="Top" Width="367">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>

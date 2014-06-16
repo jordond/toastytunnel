@@ -50,7 +50,23 @@ namespace Toaster
             
         }
 
-        private void loadSettings()
+        public void saveSettings()
+        {
+            List<Identity> temp = new List<Identity>();
+            foreach (Identity i in settings.Identities)
+            {
+                if (i.Save == true)
+                {
+                    temp.Add(i);
+                    logger.Add(Levels.INFO, "Saving identity: " + i.Name);
+                }
+            }
+            settings.Identities = temp;
+            foreach (Tunnel t in settings.Tunnels)
+                logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
+        }
+
+        public void loadSettings()
         {
             settings = Settings.Load();
             plinkLocation = settings.Plink;

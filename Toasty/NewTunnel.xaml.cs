@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
 
 using Toaster;
 namespace Toasty
@@ -25,14 +26,36 @@ namespace Toasty
         public NewTunnel()
         {
             InitializeComponent();
+            loadListView();
         }
 
         private void loadListView()
         {
+            lstIdentities.Items.Clear();
             foreach (Identity i in _toaster.settings.Identities)
             {
-
+                IdentityItem s = new IdentityItem();
+                s.ID = i.ID;
+                s.Name = i.Name;
+                s.User = i.User;
+                if (i.Password != "" || i.Password != null)
+                    s.Password = "YES";
+                else
+                    s.Password = "NO";
+                if (i.PrivateKey != "" || i.PrivateKey != null)
+                    s.PrivateKey = System.IO.Path.GetFileName(i.PrivateKey);
+                else
+                    s.PrivateKey = "NO";
+                
+                lstIdentities.Items.Add(s);
             }
+        }
+
+        private void Delete(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            IdentityItem item = b.CommandParameter as IdentityItem;
+            var test = item.ID;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -42,7 +65,10 @@ namespace Toasty
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
+            Random rnd = new Random();
+
             Tunnel n = new Tunnel();
+            n.ID = rnd.Next(13000);
             n.Name = txtTName.Text;
             n.Host = txtHost.Text;
             n.Port = int.Parse(txtSshPort.Text);
@@ -50,6 +76,7 @@ namespace Toasty
             n.autoStart = (bool)chkAuto.IsChecked;
 
             Identity i = new Identity();
+            i.ID = rnd.Next(13000);
             i.Name = txtIName.Text;
             i.User = txtUsername.Text;
             i.PrivateKey = txtPrivateKey.Text;
@@ -78,5 +105,14 @@ namespace Toasty
             if (result == true)
                 txtPrivateKey.Text = openDialog.FileName;
         }
+    }
+
+    public class IdentityItem
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        public string PrivateKey { get; set; }
     }
 }
