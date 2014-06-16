@@ -9,9 +9,9 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Toaster
+namespace Logger
 {
-    public enum LogLevels
+    public enum Levels
     {
         INFO = 0,
         WARNING = 1,
@@ -19,88 +19,106 @@ namespace Toaster
         DEBUG = 3
     };
 
-    public class LogWriter
+    public class Log
     {
-        private string logFilePath = "logs\\";
-        private string logFileName = "toastytunnel.log";
-        private string logFileFull;
-         
-        public LogWriter()
+        private static Log instance;
+        public string Filename { get; set; }
+        public string Path { get; set; }
+        public string fullPath
         {
-            createLogfile();
-            writeToLog(logHeader());
+            get
+            {
+                return Path + Filename;
+            }
         }
 
-        public void addEntry(LogLevels logLevel, string message)
+        public static Log Instance 
         {
-            StringBuilder wl = new StringBuilder();            
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Log();
+                }
+                return instance;
+            }
+        }
+
+        public Log()
+        {
+            Path = @"logs\";
+            Filename = DateTime.Now.ToString("dd_MM_yyyy") + ".log";
+            Create();
+            Write(Header());
+        }
+
+        public void Add(Levels level, string message)
+        {
+            StringBuilder wl = new StringBuilder();
             wl.Append(DateTime.Now.ToString() + "- ");
-            wl.Append(getLogLevel(logLevel));
+            wl.Append(getLevel(level));
             wl.Append(message);
 
-            writeToLog(wl.ToString());
+            Write(wl.ToString());
         }
 
-        private void createLogfile()
+        private void Write(string line)
+        {
+            using (StreamWriter sw = new StreamWriter(fullPath, true))
+            {
+                sw.WriteLine(line);
+            }
+        }
+
+        private void Create()
         {
             try
             {
-                logFileFull = logFilePath + logFileName;
-                if (!Directory.Exists(logFilePath))
-                    Directory.CreateDirectory(logFilePath);
-                if (!File.Exists(logFileFull))
-                    File.Create(logFileFull).Dispose();
+                if (!Directory.Exists(Path))
+                    Directory.CreateDirectory(Path);
+                if (!File.Exists(fullPath))
+                    File.Create(fullPath).Dispose();
                 else
                 {
-                    if (File.Exists(logFileFull + ".old"))
-                        File.Delete(logFileFull + ".old");
-                    File.Move(logFileFull, logFileFull + ".old");
-                    File.Create(logFileFull).Dispose();
+                    if (File.Exists(fullPath + ".old"))
+                        File.Delete(fullPath + ".old");
+                    File.Move(fullPath, fullPath + ".old");
+                    File.Create(fullPath).Dispose();
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-            }          
+            }
         }
 
-        private void writeToLog(string line)
-        {
-            using (StreamWriter sw = new StreamWriter(logFileFull, true))
-            {
-                sw.WriteLine(line);
-            }            
-        }
-
-        #region Log writing helpers
-        private string logHeader()
+        private string Header()
         {
             StringBuilder h = new StringBuilder();
             h.AppendLine("#########################################################");
             h.AppendLine(" Toasty Tunnel - Easy SSH Tunnel using PuTTY and Plink");
             h.AppendLine("           Jordon de Hoog - Hooger 2014");
             h.AppendLine("#########################################################");
-            h.AppendLine("Library Version: " + FileVersionInfo.GetVersionInfo(logFileFull).ProductVersion);
             h.AppendLine("Tunneler Version: ");
             h.AppendLine("Date: " + DateTime.Now.ToString());
             h.AppendLine("Working Directory: " + Directory.GetCurrentDirectory());
             h.AppendLine("Data File Location: ");
-            h.AppendLine("Log File Location: " + logFilePath + logFileName);
+            h.AppendLine("Log File Location: " + fullPath);
             h.AppendLine("Found Plink: " + File.Exists("files\\plink.exe"));
             h.AppendLine("Local IP: " + getIPAddress());
             h.AppendLine("#########################################################");
             return h.ToString();
         }
 
-        private string getLogLevel(LogLevels errorCode)
+        private string getLevel(Levels errorCode)
         {
             switch (errorCode)
             {
-                case LogLevels.INFO:    return "INFO: ";
-                case LogLevels.WARNING: return "WARNING: ";
-                case LogLevels.ERROR:   return "ERROR: ";
-                case LogLevels.DEBUG:   return "DEBUG: ";
-                default: return "NONE: ";
+                case Levels.INFO:       return "INFO: ";
+                case Levels.WARNING:    return "WARNING: ";
+                case Levels.ERROR:      return "ERROR: ";
+                case Levels.DEBUG:      return "DEBUG: ";
+                default:                return "";
             }
         }
 
@@ -123,6 +141,5 @@ namespace Toaster
             }
             return "Unvailable";
         }
-        #endregion
     }
 }

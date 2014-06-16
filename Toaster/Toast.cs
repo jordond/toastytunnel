@@ -4,27 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Logger;
+
 namespace Toaster
 {
     public class Toast
     {
-        private Dictionary<int,Identity> _identities;
-        private Dictionary<int,Session> _sessions;
-        private List<Tunnel> _tunnels = new List<Tunnel>();
+        public Settings settings { get; set; }
+        public List<Tunnel> _tunnels = new List<Tunnel>();        
         public static LogWriter _logWriter;
-        public static Information _data;
-
-        public const string plinkLocation = @"files\plink.exe"; 
+        public static string plinkLocation;
+        public Log logger = Log.Instance;
 
         public Toast()
         {
             try
             {
-                _logWriter = new LogWriter();
-                _data = new Information();
-                _identities = _data.Identities;
-                _sessions = _data.Sessions;
-                _tunnels = new List<Tunnel>();
+                //_logWriter = new LogWriter();
+                loadSettings();
+                settings.saveSettings();
             }
             catch (Exception ex)
             {
@@ -35,20 +33,23 @@ namespace Toaster
 
         public void debugCreate()
         {
-            foreach (Session s in _sessions.Values)
-            {
-                Tunnel temp = new Tunnel(s);
-                temp.ID = _tunnels.Count() + 1;
-                temp.start();
-                _tunnels.Add(temp);
-            }
+            
         }
         public void debugKill()
         {
-            foreach(Tunnel t in _tunnels)
-            {
-                t.stop();
-            }
+            
+        }
+
+        private void loadSettings()
+        {
+            settings = Settings.Load();
+            plinkLocation = settings.Plink;
+
+            logger.Add(Levels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Tunnels.Count() + " sessions.");
+            foreach (Identity i in settings.Identities)
+                logger.Add(Levels.INFO, "Found identity: " + i.Name);
+            foreach (Tunnel t in settings.Tunnels)
+                logger.Add(Levels.INFO, "Found tunnel: " + t.Name);
         }
     }
 }
