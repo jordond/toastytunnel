@@ -11,8 +11,7 @@ namespace Toaster
     public class Toast
     {
         public Settings settings { get; set; }
-        public List<Tunnel> _tunnels = new List<Tunnel>();        
-        public static LogWriter _logWriter;
+        public List<Tunnel> _tunnels = new List<Tunnel>();
         public static string plinkLocation;
         public Log logger = Log.Instance;
 
@@ -20,7 +19,6 @@ namespace Toaster
         {
             try
             {
-                //_logWriter = new LogWriter();
                 loadSettings();
                 settings.saveSettings();
             }
