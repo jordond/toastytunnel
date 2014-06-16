@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToastyTunnel", "ToastTunnel\ToastyTunnel.csproj", "{8BFC8AEE-7995-4A1D-86F4-C5C045E69934}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toaster", "Toaster\Toaster.csproj", "{2D2056B5-CBD7-48DA-89C0-4FD47F00FF5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Log\Logger.csproj", "{F001DE1E-2232-4B7D-8CF2-B50121B48E39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Toasty", "Toasty\Toasty.csproj", "{BB95E7CB-2926-4B12-B2BD-2368F46A538A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,10 @@ Global
 		{F001DE1E-2232-4B7D-8CF2-B50121B48E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F001DE1E-2232-4B7D-8CF2-B50121B48E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F001DE1E-2232-4B7D-8CF2-B50121B48E39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB95E7CB-2926-4B12-B2BD-2368F46A538A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB95E7CB-2926-4B12-B2BD-2368F46A538A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB95E7CB-2926-4B12-B2BD-2368F46A538A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB95E7CB-2926-4B12-B2BD-2368F46A538A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
