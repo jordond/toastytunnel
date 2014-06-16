@@ -72,7 +72,7 @@ namespace Toaster
 
         public Tunnel()
         {
-            Instance = new Process();
+            //Instance = new Process();
         }
 
         //per tunnel start

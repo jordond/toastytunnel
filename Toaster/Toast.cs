@@ -15,12 +15,24 @@ namespace Toaster
         public static string plinkLocation;
         public Log logger = Log.Instance;
 
+        private static Toast instance;
+        public static Toast Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Toast();
+                }
+                return instance;
+            }
+        }
+
         public Toast()
         {
             try
             {
                 loadSettings();
-                settings.saveSettings();
             }
             catch (Exception ex)
             {

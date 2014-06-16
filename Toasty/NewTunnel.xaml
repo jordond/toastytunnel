@@ -1,4 +1,4 @@
-﻿<Window x:Class="Toasty.New"
+﻿<Window x:Class="Toasty.NewTunnel"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="New Tunnel" Height="489" Width="390">
@@ -7,14 +7,14 @@
             <Grid>
                 <ListBox x:Name="lstIdentities" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="340"/>
                 <Label Content="Nickname: " HorizontalAlignment="Left" Margin="0,142,0,0" VerticalAlignment="Top"/>
-                <TextBox Name="txtName" HorizontalAlignment="Left" Height="23" Margin="74,145,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90"/>
+                <TextBox Name="txtIName" HorizontalAlignment="Left" Height="23" Margin="74,145,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90"/>
                 <Label Content="Username: " HorizontalAlignment="Left" Margin="0,170,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtUsername" HorizontalAlignment="Left" Height="23" Margin="74,172,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90"/>
                 <Label Content="Password: " HorizontalAlignment="Left" Margin="164,170,0,0" VerticalAlignment="Top"/>
                 <PasswordBox Name="txtPassword" HorizontalAlignment="Left" Margin="235,173,0,0" VerticalAlignment="Top" Width="105" Height="23"/>
                 <Label Content="Private Key:" HorizontalAlignment="Left" Margin="0,197,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtPrivateKey" HorizontalAlignment="Left" Height="23" Margin="74,200,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="186" IsReadOnly="True"/>
-                <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="265,200,0,0" VerticalAlignment="Top" Width="75" />
+                <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="265,200,0,6" Width="75" Click="btnBrowse_Click" />
             </Grid>
         </GroupBox>
         <GroupBox Header="Tunnel" HorizontalAlignment="Left" Margin="10,265,0,0" VerticalAlignment="Top" Height="155" Width="362">
@@ -31,14 +31,14 @@
                 <TextBox x:Name="txtHost" HorizontalAlignment="Left" Height="23" Margin="47,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="216"/>
                 <CheckBox x:Name="chkAuto" Content="Auto Start" HorizontalAlignment="Left" Margin="244,75,0,0" VerticalAlignment="Top"/>
                 <Label Content="Nickname: " HorizontalAlignment="Left" Margin="6,7,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="txtName_Copy" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113"/>
+                <TextBox x:Name="txtTName" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113"/>
                 <TextBox x:Name="txtSshPort" HorizontalAlignment="Left" Height="23" Margin="272,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="43"/>
                 <Label Content=":" HorizontalAlignment="Left" Margin="261,37,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.692,0.533" Height="24"/>
 
             </Grid>
         </GroupBox>
-        <Button Name="btnOk" Content="Ok" HorizontalAlignment="Left" Margin="217,425,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="297,425,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Name="btnOk" Content="Ok" HorizontalAlignment="Left" Margin="217,425,0,0" VerticalAlignment="Top" Width="75" Click="btnOk_Click"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="297,425,0,0" VerticalAlignment="Top" Width="75" Click="btnCancel_Click"/>
         <CheckBox x:Name="chkSave" Content="Save" HorizontalAlignment="Left" Margin="154,428,0,0" VerticalAlignment="Top"/>
 
     </Grid>
