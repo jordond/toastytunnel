@@ -32,6 +32,8 @@
                 <CheckBox x:Name="chkAuto" Content="Auto Start" HorizontalAlignment="Left" Margin="244,75,0,0" VerticalAlignment="Top"/>
                 <Label Content="Nickname: " HorizontalAlignment="Left" Margin="6,7,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtName_Copy" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113"/>
+                <TextBox x:Name="txtSshPort" HorizontalAlignment="Left" Height="23" Margin="272,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="43"/>
+                <Label Content=":" HorizontalAlignment="Left" Margin="261,37,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.692,0.533" Height="24"/>
 
             </Grid>
         </GroupBox>
