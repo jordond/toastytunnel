@@ -5,8 +5,9 @@
     <Grid>
         <Label Content="Active Tunnels:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
         <ListBox x:Name="lstTunnels" HorizontalAlignment="Left" Height="198" Margin="10,26,0,0" VerticalAlignment="Top" Width="367"/>
-        <Button x:Name="btnOpen" Content="Open" HorizontalAlignment="Left" Margin="328,2,0,0" VerticalAlignment="Top" Width="49"/>
+        <Button x:Name="btnOpen" Content="Open" HorizontalAlignment="Left" Margin="222,229,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="302,229,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="btnNew"  Content="New" HorizontalAlignment="Left" Margin="10,229,0,0" VerticalAlignment="Top" Width="75"/>
 
     </Grid>
 </Window>

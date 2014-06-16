@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Toasty
 {
     /// <summary>
-    /// Interaction logic for Tunnels.xaml
+    /// Interaction logic for New.xaml
     /// </summary>
-    public partial class Tunnels : Window
+    public partial class New : Window
     {
-        public Tunnels()
+        public New()
         {
             InitializeComponent();
         }
