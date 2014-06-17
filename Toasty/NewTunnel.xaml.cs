@@ -47,7 +47,10 @@ namespace Toasty
                 else
                     s.Password = "NO";
                 if (i.PrivateKey != "" || i.PrivateKey != null)
+                {
                     s.PrivateKey = System.IO.Path.GetFileName(i.PrivateKey);
+                    s.PrivateKeyFull = i.PrivateKey;
+                }
                 else
                     s.PrivateKey = "NO";
                 
@@ -104,7 +107,7 @@ namespace Toasty
 
             _toaster.tunnels.Add(n);
             _toaster.settings.Identities.Add(i);
-                        
+
             this.Close();
         }
 
@@ -142,7 +145,7 @@ namespace Toasty
                 txtIName.Text = i.Name;
                 txtUsername.Text = i.User;
                 txtPassword.Password = i.Password;
-                txtPrivateKey.Text = i.PrivateKey;
+                txtPrivateKey.Text = i.PrivateKeyFull;
             }
         }
     }
@@ -154,5 +157,6 @@ namespace Toasty
         public string User { get; set; }
         public string Password { get; set; }
         public string PrivateKey { get; set; }
+        public string PrivateKeyFull { get; set; }
     }
 }

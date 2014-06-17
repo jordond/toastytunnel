@@ -11,7 +11,7 @@ namespace Toaster
 {
     public class Tunnel
     {
-        private Log logger = Log.Instance;
+        //private Log log = Log.Instance;
         public int ID { get; set; }
         public string Name { get; set; }
         public Identity identity { get; set; }
@@ -82,12 +82,12 @@ namespace Toaster
             {
                 Instance = new Process();
                 Instance.StartInfo = InstanceInfo;
-                logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
+                Toast.Instance.logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();
             }
             catch (Exception ex)
             {
-                logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
+                Toast.Instance.logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
                 throw new Exception("Tunnel.cs - start() - " + ex.Message);
             }
         }
@@ -99,22 +99,23 @@ namespace Toaster
             {
                 if (Instance == null)                
                 {
-                    logger.Add(Levels.INFO, "Cannot stop, it was never started");
+                    Toast.Instance.logger.Add(Levels.INFO, "Cannot stop, it was never started");
                 }
                 else if (Instance.HasExited)
                 {
-                    logger.Add(Levels.WARNING, Name + " has already collapsed...");
+                    Toast.Instance.logger.Add(Levels.INFO, Name + " has already collapsed");
                 }
                 else
                 {
-                    logger.Add(Levels.INFO, "Collapsing the " + Name + " tunnel.");
-                    Instance.Kill();
+                    Toast.Instance.logger.Add(Levels.INFO, "Collapsing the " + Name + " tunnel.");                    
+                    Instance.Kill();                    
                 }
+                Instance = null;
                 isOpen = false;
             }
             catch (Exception ex)
             {
-                logger.Add(Levels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
+                Toast.Instance.logger.Add(Levels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
                 throw new Exception("Tunnel.cs - stop() - " + ex.Message);
             }
         }

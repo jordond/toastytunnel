@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Windows.Threading;
 using Toaster;
 using Logger;
 
@@ -22,7 +22,8 @@ namespace Toasty
     {
         public static Toast _toaster;
         public static NewTunnel newTunnel;
-        private Log _log = Log.Instance;
+        private DispatcherTimer timer;
+        private Log log = Log.Instance;
 
         public MainWindow()
         {
@@ -33,8 +34,13 @@ namespace Toasty
                 if (!_toaster.settings.plinkExists() )
                     findPlink();
 
-                loadListView();
+                timer = new DispatcherTimer();
+                timer.Interval = new TimeSpan(0, 0, 1);
+                timer.Tick += new EventHandler(timerTick);
+                timer.Start();
 
+                //autostart
+               // _toaster.tunnels.Start();
             }
             catch (Exception ex)
             {
@@ -42,7 +48,12 @@ namespace Toasty
             }
         }
 
-        private void loadListView()
+        private void timerTick(object sender, EventArgs e)
+        {
+            loadListView();
+        }
+
+        public void loadListView()
         {
             lstTunnels.Items.Clear();
             foreach (Tunnel t in _toaster.tunnels.All)
@@ -50,11 +61,11 @@ namespace Toasty
                 TunnelItem ti = new TunnelItem();
                 ti.ID = t.ID;
                 ti.Name = t.Name;
-                ti.TunnelDesc = t.identity.User + "@" + t.Host;
+                ti.TunnelDesc = t.identity.User + "@" + t.Host + " ";
                 if (t.LocalPort != 0 || t.RemoteAddress != null)
-                    ti.Port = t.LocalPort + "==" + t.RemoteAddress + ":" + t.RemotePort;
+                    ti.TunnelDesc += t.LocalPort + ":" + t.RemoteAddress + ":" + t.RemotePort;
                 else
-                    ti.Port = "D" + t.RemotePort;
+                    ti.TunnelDesc += "D" + t.RemotePort;
                 ti.Active = t.isOpen;
 
                 lstTunnels.Items.Add(ti);
@@ -65,7 +76,7 @@ namespace Toasty
         {
             if (!_toaster.settings.plinkExists())
             {
-                _log.Add(Levels.WARNING, "Can't build tunnel, plink not found.");
+                log.Add(Levels.WARNING, "Can't build tunnel, plink not found.");
                 findPlink();
             }
             else
@@ -75,7 +86,7 @@ namespace Toasty
 
                 if (!item.Active)
                 {
-                    _log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
+                    log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
                     _toaster.tunnels.Start(item.ID);
                 }
                 loadListView();
@@ -89,7 +100,7 @@ namespace Toasty
 
             if (item.Active)
             {
-                _log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
+                log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
                 _toaster.tunnels.Stop(item.ID);
             }
             loadListView();
@@ -99,13 +110,6 @@ namespace Toasty
         {
             newTunnel = new NewTunnel();
             newTunnel.Show();
-        }
-
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-            _toaster.tunnels.Stop();
-            _toaster.saveSettings();
-            Environment.Exit(0);
         }
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
@@ -125,29 +129,36 @@ namespace Toasty
 
             //Show the dialog box to the user
             Nullable<bool> result = openDialog.ShowDialog();
-            _log.Add(Levels.INFO, "The search for plink begins!");
+            log.Add(Levels.INFO, "The search for plink begins!");
 
             if (result == true)
             {
                 _toaster.settings.Plink = openDialog.FileName;
-                _log.Add(Levels.INFO, "Plink was found at '" + _toaster.settings.Plink + "'.");
+                log.Add(Levels.INFO, "Plink was found at '" + _toaster.settings.Plink + "'.");
             }
             else
-                _log.Add(Levels.WARNING, "You gave up on finding plink...");
+                log.Add(Levels.WARNING, "You gave up on finding plink...");
+        }
+        #region Closing methods
+        private void close()
+        {
+            timer.Stop();
+            _toaster.tunnels.Stop();
+            _toaster.saveSettings();
+            Environment.Exit(0);
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            close();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
-            {
-                _toaster.tunnels.Stop();
-                _toaster.saveSettings();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error has occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            e.Cancel = true;
+            close();
         }
+        #endregion
     }
 
     public class TunnelItem
