@@ -15,22 +15,12 @@ namespace Toaster
         public List<Tunnel> Tunnels { get; set; }
         public List<Identity> Identities { get; set; }
         public string Plink { get; set; }
-        private Log  logger = Log.Instance;
+        private Log  log = Log.Instance;
 
         public Settings()
         {
             Tunnels = new List<Tunnel>();
             Identities = new List<Identity>();
-        }
-        
-        public void saveSettings()
-        {
-            foreach (Identity i in this.Identities)
-                logger.Add(Levels.INFO, "Saving identity: " + i.Name);
-            foreach (Tunnel t in this.Tunnels)
-                logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
-
-            this.Save();
         }
     }
 

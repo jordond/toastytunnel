@@ -14,12 +14,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using Toaster;
+using Logger;
 
 namespace Toasty
 {
     public partial class MainWindow : Window
     {
         public static Toast _toaster;
+        public static NewTunnel newTunnel;
+        private Log _log = Log.Instance;
 
         public MainWindow()
         {
@@ -27,8 +30,10 @@ namespace Toasty
             try
             {
                 _toaster = Toast.Instance;
-                
-                lstTunnels.ItemsSource = _toaster.settings.Tunnels;
+                if (_toaster.settings.Plink == "" || _toaster.settings.Plink == null)
+                    findPlink();
+
+                loadListView();
 
             }
             catch (Exception ex)
@@ -37,20 +42,87 @@ namespace Toasty
             }
         }
 
+        private void loadListView()
+        {
+            lstTunnels.Items.Clear();
+            foreach (Tunnel t in _toaster.tunnels.All)
+            {
+                TunnelItem ti = new TunnelItem();
+                ti.ID = t.ID;
+                ti.Name = t.Name;
+                ti.TunnelDesc = t.identity.User + "@" + t.Host;
+                if (t.LocalPort != 0 || t.RemoteAddress != null)
+                    ti.Port = t.LocalPort + "==" + t.RemoteAddress + ":" + t.RemotePort;
+                ti.Active = t.isOpen;
+
+                lstTunnels.Items.Add(ti);
+            }
+        }
+
+        private void Start(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            TunnelItem item = b.CommandParameter as TunnelItem;
+
+            _log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
+            _toaster.tunnels.Start(item.ID);
+
+            loadListView();
+        }
+
+        private void Stop(object sender, RoutedEventArgs e)
+        {
+            Button b = sender as Button;
+            TunnelItem item = b.CommandParameter as TunnelItem;
+
+            _log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
+            _toaster.tunnels.Stop(item.ID);
+            
+            loadListView();
+        }
+
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
-            NewTunnel newTunnel = new NewTunnel();
+            newTunnel = new NewTunnel();
             newTunnel.Show();
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            lstTunnels.ItemsSource = _toaster.settings.Tunnels;
+            _toaster.tunnels.Stop();
+            _toaster.saveSettings();
+            Environment.Exit(0);
         }
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
             _toaster.saveSettings();
         }
+
+        private void findPlink()
+        {
+            //Create the file open dialog
+            Microsoft.Win32.OpenFileDialog openDialog = new Microsoft.Win32.OpenFileDialog();
+
+            //Set the filter options
+            openDialog.Title = "Please Locate the Plink executable.";
+            openDialog.Filter = "Plink |*.exe";
+            openDialog.FilterIndex = 1;
+
+            //Show the dialog box to the user
+            Nullable<bool> result = openDialog.ShowDialog();
+
+            if (result == true)
+                _toaster.settings.Plink = openDialog.FileName;
+        }
+    }
+
+    public class TunnelItem
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string TunnelDesc { get; set; }
+        public string Port { get; set; }
+        public bool Active { get; set; }
     }
 }

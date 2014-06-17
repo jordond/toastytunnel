@@ -11,8 +11,7 @@ namespace Toaster
     public class Toast
     {
         public Settings settings { get; set; }
-        public List<Tunnel> _tunnels = new List<Tunnel>();
-        public static string plinkLocation;
+        public TunnelManager tunnels;
         public Log logger = Log.Instance;
 
         private static Toast instance;
@@ -33,6 +32,7 @@ namespace Toaster
             try
             {
                 loadSettings();
+                tunnels = new TunnelManager(settings.Tunnels);
             }
             catch (Exception ex)
             {
@@ -62,14 +62,15 @@ namespace Toaster
                 }
             }
             settings.Identities = temp;
-            foreach (Tunnel t in settings.Tunnels)
+            foreach (Tunnel t in tunnels.All)
                 logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
+            settings.Tunnels = tunnels.All;
+            settings.Save();
         }
 
         public void loadSettings()
         {
             settings = Settings.Load();
-            plinkLocation = settings.Plink;
 
             logger.Add(Levels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Tunnels.Count() + " sessions.");
             foreach (Identity i in settings.Identities)

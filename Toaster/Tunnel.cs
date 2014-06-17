@@ -35,7 +35,7 @@ namespace Toaster
                 cs.Append(identity.User + "@" + Host + " ");
                 if (Port != 22)
                     cs.Append("-p " + Port + " ");
-                if (!File.Exists(identity.PrivateKey) || identity.Password != "")
+                if (!File.Exists(identity.PrivateKey) || identity.Password != null)
                     cs.Append("-pw " + identity.Password);
 
                 return cs.ToString();
@@ -48,7 +48,7 @@ namespace Toaster
             get
             {
                 if (Instance != null)
-                    return Instance.HasExited;
+                    return !Instance.HasExited;
                 return false;
             }
             set { }
@@ -59,12 +59,12 @@ namespace Toaster
             get 
             {
                 ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = Toast.plinkLocation;
+                info.FileName = Toast.Instance.settings.Plink;
                 info.Arguments = ConnectionString;
                 info.WindowStyle = ProcessWindowStyle.Minimized;
                 #if !DEBUG
-                temp.UseShellExecute = false;
-                temp.CreateNoWindow = true;
+                info.UseShellExecute = false;
+                info.CreateNoWindow = true;
                 #endif
                 return info;
             }
@@ -80,6 +80,7 @@ namespace Toaster
         {
             try
             {
+                Instance = new Process();
                 Instance.StartInfo = InstanceInfo;
                 logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();

@@ -5,19 +5,33 @@
     <Grid>
         <Label Content="Tunnels:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
         <ListView x:Name="lstTunnels" HorizontalAlignment="Left" Height="187" Margin="10,26,0,0" VerticalAlignment="Top" Width="367">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <WrapPanel>
-                        <TextBlock Text="{Binding Name}" FontWeight="Bold" />
-                        <TextBlock Text="{Binding identity.User}" />
-                        <TextBlock Text="@" />
-                        <TextBlock Text="{Binding Host}" />
-                        <TextBlock Text="D" />
-                        <TextBlock Text="{Binding RemotePort}" />
-                        <TextBlock Text="{Binding isOpen}" />
-                    </WrapPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="25" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="70" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Tunnel" Width="70" DisplayMemberBinding="{Binding TunnelDesc}" />
+                    <GridViewColumn Header="Port" Width="65" DisplayMemberBinding="{Binding Port}" />
+                    <GridViewColumn Header="Status" Width="65" DisplayMemberBinding="{Binding Active}" />                    
+                    <GridViewColumn Header="Start" Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Height="20" Width="20" Padding="0" Margin="0" Content="✓" Click="Start" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Stop" Width="30">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>                                
+                                <Button Height="20" Width="20" Padding="0" Margin="0" Content="x" Click="Stop" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
         </ListView>
         <Button x:Name="btnOpen" Content="Open" HorizontalAlignment="Left" Margin="222,229,0,0" VerticalAlignment="Top" Width="75" Click="btnOpen_Click"/>
         <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="302,229,0,0" VerticalAlignment="Top" Width="75" Click="btnClose_Click"/>

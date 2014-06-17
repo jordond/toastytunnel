@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using System.IO;
 
 using Toaster;
+using Logger;
+
 namespace Toasty
 {
     /// <summary>
@@ -22,6 +24,7 @@ namespace Toasty
     public partial class NewTunnel : Window
     {
         private Toast _toaster = Toast.Instance;
+        private Log _log = Log.Instance;
 
         public NewTunnel()
         {
@@ -35,6 +38,7 @@ namespace Toasty
             foreach (Identity i in _toaster.settings.Identities)
             {
                 IdentityItem s = new IdentityItem();
+                
                 s.ID = i.ID;
                 s.Name = i.Name;
                 s.User = i.User;
@@ -55,7 +59,14 @@ namespace Toasty
         {
             Button b = sender as Button;
             IdentityItem item = b.CommandParameter as IdentityItem;
-            var test = item.ID;
+
+            MessageBoxResult result = MessageBox.Show("Are you sure you would like to delete the " + item.Name + " identity", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Asterisk);
+            if (result == MessageBoxResult.Yes)
+            {
+                _log.Add(Levels.INFO, "Deleting saved identity: " + item.Name + " - Username: " + item.User);
+                _toaster.settings.Identities.RemoveAll(i => i.ID == item.ID);
+            }
+            loadListView();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -67,25 +78,30 @@ namespace Toasty
         {
             Random rnd = new Random();
 
-            Tunnel n = new Tunnel();
-            n.ID = rnd.Next(13000);
-            n.Name = txtTName.Text;
-            n.Host = txtHost.Text;
-            n.Port = int.Parse(txtSshPort.Text);
-            n.RemotePort = int.Parse(txtRemotePort.Text);
-            n.autoStart = (bool)chkAuto.IsChecked;
-
             Identity i = new Identity();
-            i.ID = rnd.Next(13000);
+            i.ID = _toaster.settings.Identities.Count() + 1;
             i.Name = txtIName.Text;
             i.User = txtUsername.Text;
             i.PrivateKey = txtPrivateKey.Text;
             i.Save = (bool)chkSave.IsChecked;
 
+            Tunnel n = new Tunnel();
+            n.ID = _toaster.settings.Tunnels.Count() + 1;
+            n.Name = txtTName.Text;
             n.identity = i;
-            _toaster.settings.Tunnels.Add(n);
+            n.Host = txtHost.Text;
+            n.Port = int.Parse(txtSshPort.Text);
+            if (rdLocal.IsChecked == true )
+            {
+                n.LocalPort = int.Parse(txtLocalPort.Text);
+                n.RemoteAddress = txtRemoteHost.Text;
+            }
+            n.RemotePort = int.Parse(txtRemotePort.Text);
+            n.autoStart = (bool)chkAuto.IsChecked;
+
+            _toaster.tunnels.Add(n);
             _toaster.settings.Identities.Add(i);
-            
+                        
             this.Close();
         }
 
@@ -96,7 +112,7 @@ namespace Toasty
 
             //Set the filter options
             openDialog.Title = "Select the private key you want to use.";
-            openDialog.Filter = "Private Key |*.ppk| All files |*.*";
+            openDialog.Filter = "Private Key |*.ppk";
             openDialog.FilterIndex = 1;
 
             //Show the dialog box to the user
