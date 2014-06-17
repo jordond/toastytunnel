@@ -97,7 +97,11 @@ namespace Toaster
         {
             try
             {
-                if (Instance.HasExited)
+                if (Instance == null)                
+                {
+                    logger.Add(Levels.INFO, "Cannot stop, it was never started");
+                }
+                else if (Instance.HasExited)
                 {
                     logger.Add(Levels.WARNING, Name + " has already collapsed...");
                 }

@@ -63,15 +63,23 @@ namespace Toasty
 
         private void Start(object sender, RoutedEventArgs e)
         {
-            Button b = sender as Button;
-            TunnelItem item = b.CommandParameter as TunnelItem;
-            
-            if (!item.Active)
+            if (!_toaster.settings.plinkExists())
             {
-                _log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
-                _toaster.tunnels.Start(item.ID);
+                _log.Add(Levels.WARNING, "Can't build tunnel, plink not found.");
+                findPlink();
             }
-            loadListView();
+            else
+            {
+                Button b = sender as Button;
+                TunnelItem item = b.CommandParameter as TunnelItem;
+
+                if (!item.Active)
+                {
+                    _log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
+                    _toaster.tunnels.Start(item.ID);
+                }
+                loadListView();
+            }
         }
 
         private void Stop(object sender, RoutedEventArgs e)
@@ -117,9 +125,15 @@ namespace Toasty
 
             //Show the dialog box to the user
             Nullable<bool> result = openDialog.ShowDialog();
+            _log.Add(Levels.INFO, "The search for plink begins!");
 
             if (result == true)
+            {
                 _toaster.settings.Plink = openDialog.FileName;
+                _log.Add(Levels.INFO, "Plink was found at '" + _toaster.settings.Plink + "'.");
+            }
+            else
+                _log.Add(Levels.WARNING, "You gave up on finding plink...");
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
