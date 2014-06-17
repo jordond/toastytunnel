@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using Logger;
 
 namespace Toaster
 {
     public class Tunnel
     {
+        private Log logger = Log.Instance;
         public int ID { get; set; }
         public string Name { get; set; }
         public Identity identity { get; set; }
@@ -33,7 +35,7 @@ namespace Toaster
                 cs.Append(identity.User + "@" + Host + " ");
                 if (Port != 22)
                     cs.Append("-p " + Port + " ");
-                if (!File.Exists(identity.PrivateKey) || identity.Password != "")
+                if (!File.Exists(identity.PrivateKey) || identity.Password != null)
                     cs.Append("-pw " + identity.Password);
 
                 return cs.ToString();
@@ -46,7 +48,7 @@ namespace Toaster
             get
             {
                 if (Instance != null)
-                    return Instance.HasExited;
+                    return !Instance.HasExited;
                 return false;
             }
             set { }
@@ -57,12 +59,12 @@ namespace Toaster
             get 
             {
                 ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = Toast.plinkLocation;
+                info.FileName = Toast.Instance.settings.Plink;
                 info.Arguments = ConnectionString;
                 info.WindowStyle = ProcessWindowStyle.Minimized;
                 #if !DEBUG
-                temp.UseShellExecute = false;
-                temp.CreateNoWindow = true;
+                info.UseShellExecute = false;
+                info.CreateNoWindow = true;
                 #endif
                 return info;
             }
@@ -70,7 +72,7 @@ namespace Toaster
 
         public Tunnel()
         {
-            Instance = new Process();
+            //Instance = new Process();
         }
 
         //per tunnel start
@@ -78,13 +80,14 @@ namespace Toaster
         {
             try
             {
+                Instance = new Process();
                 Instance.StartInfo = InstanceInfo;
-                Toast._logWriter.addEntry(LogLevels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
+                logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();
             }
             catch (Exception ex)
             {
-                Toast._logWriter.addEntry(LogLevels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
+                logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
                 throw new Exception("Tunnel.cs - start() - " + ex.Message);
             }
         }
@@ -96,18 +99,18 @@ namespace Toaster
             {
                 if (Instance.HasExited)
                 {
-                    Toast._logWriter.addEntry(LogLevels.WARNING, Name + " has already collapsed...");
+                    logger.Add(Levels.WARNING, Name + " has already collapsed...");
                 }
                 else
                 {
-                    Toast._logWriter.addEntry(LogLevels.INFO, "Collapsing the " + Name + " tunnel.");
+                    logger.Add(Levels.INFO, "Collapsing the " + Name + " tunnel.");
                     Instance.Kill();
                 }
                 isOpen = false;
             }
             catch (Exception ex)
             {
-                Toast._logWriter.addEntry(LogLevels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
+                logger.Add(Levels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
                 throw new Exception("Tunnel.cs - stop() - " + ex.Message);
             }
         }

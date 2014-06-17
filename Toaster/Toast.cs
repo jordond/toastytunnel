@@ -4,22 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Logger;
+
 namespace Toaster
 {
     public class Toast
     {
         public Settings settings { get; set; }
-        public List<Tunnel> _tunnels = new List<Tunnel>();        
-        public static LogWriter _logWriter;
-        public static string plinkLocation; 
+        public TunnelManager tunnels;
+        public Log logger = Log.Instance;
+
+        private static Toast instance;
+        public static Toast Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Toast();
+                }
+                return instance;
+            }
+        }
 
         public Toast()
         {
             try
             {
-                _logWriter = new LogWriter();
                 loadSettings();
-                settings.saveSettings();
+                tunnels = new TunnelManager(settings.Tunnels);
             }
             catch (Exception ex)
             {
@@ -37,16 +50,33 @@ namespace Toaster
             
         }
 
-        private void loadSettings()
+        public void saveSettings()
+        {
+            List<Identity> temp = new List<Identity>();
+            foreach (Identity i in settings.Identities)
+            {
+                if (i.Save == true)
+                {
+                    temp.Add(i);
+                    logger.Add(Levels.INFO, "Saving identity: " + i.Name);
+                }
+            }
+            settings.Identities = temp;
+            foreach (Tunnel t in tunnels.All)
+                logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
+            settings.Tunnels = tunnels.All;
+            settings.Save();
+        }
+
+        public void loadSettings()
         {
             settings = Settings.Load();
-            plinkLocation = settings.Plink;
 
-            Toast._logWriter.addEntry(LogLevels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Tunnels.Count() + " sessions.");
+            logger.Add(Levels.INFO, "Found " + settings.Identities.Count() + " identities, and " + settings.Tunnels.Count() + " sessions.");
             foreach (Identity i in settings.Identities)
-                Toast._logWriter.addEntry(LogLevels.INFO, "Found identity: " + i.Name);
+                logger.Add(Levels.INFO, "Found identity: " + i.Name);
             foreach (Tunnel t in settings.Tunnels)
-                Toast._logWriter.addEntry(LogLevels.INFO, "Found tunnel: " + t.Name);
+                logger.Add(Levels.INFO, "Found tunnel: " + t.Name);
         }
     }
 }

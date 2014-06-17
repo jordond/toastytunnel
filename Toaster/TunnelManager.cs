@@ -15,14 +15,31 @@ namespace Toaster
             Tunnels = t;
         }
 
-        public List<Tunnel> getOpen()
+        public List<Tunnel> All
         {
-            var o = new List<Tunnel>();
-            foreach (Tunnel t in Tunnels.Where(i => i.isOpen == true))
-                o.Add(t);
-            return o;
+            get
+            {
+                return Tunnels;
+            }
         }
 
+        public List<Tunnel> Open
+        {
+            get
+            {
+                var o = new List<Tunnel>();
+                foreach (Tunnel t in Tunnels.Where(i => i.isOpen == true))
+                    o.Add(t);
+                return o;
+            }
+        }
+
+        public void Add(Tunnel t)
+        {
+            Tunnels.Add(t);
+        }
+
+        
         #region Tunnel Start Methods
         //autostart 
         public void Start()
@@ -75,7 +92,7 @@ namespace Toaster
             try
             {
                 foreach (Tunnel t in Tunnels)
-                    t.Start();
+                    t.Stop();
             }
             catch (Exception ex)
             {
