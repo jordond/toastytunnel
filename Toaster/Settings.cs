@@ -15,12 +15,16 @@ namespace Toaster
         public List<Tunnel> Tunnels { get; set; }
         public List<Identity> Identities { get; set; }
         public string Plink { get; set; }
-        private Log  log = Log.Instance;
-
+        
         public Settings()
         {
             Tunnels = new List<Tunnel>();
             Identities = new List<Identity>();
+        }
+
+        public bool plinkExists()
+        {
+            return File.Exists(Plink);
         }
     }
 

@@ -30,7 +30,7 @@ namespace Toasty
             try
             {
                 _toaster = Toast.Instance;
-                if (_toaster.settings.Plink == "" || _toaster.settings.Plink == null)
+                if (!_toaster.settings.plinkExists() )
                     findPlink();
 
                 loadListView();
@@ -53,6 +53,8 @@ namespace Toasty
                 ti.TunnelDesc = t.identity.User + "@" + t.Host;
                 if (t.LocalPort != 0 || t.RemoteAddress != null)
                     ti.Port = t.LocalPort + "==" + t.RemoteAddress + ":" + t.RemotePort;
+                else
+                    ti.Port = "D" + t.RemotePort;
                 ti.Active = t.isOpen;
 
                 lstTunnels.Items.Add(ti);
@@ -63,10 +65,12 @@ namespace Toasty
         {
             Button b = sender as Button;
             TunnelItem item = b.CommandParameter as TunnelItem;
-
-            _log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
-            _toaster.tunnels.Start(item.ID);
-
+            
+            if (!item.Active)
+            {
+                _log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
+                _toaster.tunnels.Start(item.ID);
+            }
             loadListView();
         }
 
@@ -75,9 +79,11 @@ namespace Toasty
             Button b = sender as Button;
             TunnelItem item = b.CommandParameter as TunnelItem;
 
-            _log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
-            _toaster.tunnels.Stop(item.ID);
-            
+            if (item.Active)
+            {
+                _log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
+                _toaster.tunnels.Stop(item.ID);
+            }
             loadListView();
         }
 
@@ -114,6 +120,19 @@ namespace Toasty
 
             if (result == true)
                 _toaster.settings.Plink = openDialog.FileName;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                _toaster.tunnels.Stop();
+                _toaster.saveSettings();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error has occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 
