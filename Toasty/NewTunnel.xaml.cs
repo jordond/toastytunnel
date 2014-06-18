@@ -25,6 +25,7 @@ namespace Toasty
     {
         private Toast _toaster = Toast.Instance;
         private Log _log = Log.Instance;
+        private Identity _identity;
 
         public NewTunnel()
         {
@@ -76,10 +77,7 @@ namespace Toasty
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
-            Random rnd = new Random();
-
             Identity i = new Identity();
-            i.ID = _toaster.settings.Identities.Count() + 1;
             i.Name = txtIName.Text;
             i.User = txtUsername.Text;
             if (txtPrivateKey.Text != "")
@@ -103,7 +101,19 @@ namespace Toasty
             n.autoStart = (bool)chkAuto.IsChecked;
 
             _toaster.tunnels.Add(n);
-            _toaster.settings.Identities.Add(i);
+
+            if (_identity == null)
+            {
+                i.ID = _toaster.settings.Identities.Count() + 1;
+                _toaster.settings.Identities.Add(i);
+            }
+            else
+            {
+                int oldID = _identity.ID;
+                _identity = i;
+                _identity.ID = oldID;
+            }
+            
 
             this.Close();
         }
@@ -142,6 +152,7 @@ namespace Toasty
                 Identity i = _toaster.settings.Identities.First(a => a.ID == ii.ID);
                 if (i != null)
                 {
+                    _identity = i;
                     txtIName.Text = i.Name;
                     txtUsername.Text = i.User;
                     txtPassword.Password = i.Password;

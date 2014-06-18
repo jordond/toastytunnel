@@ -58,15 +58,19 @@ namespace Toaster
         {
             get 
             {
-                ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = Toast.Instance.settings.Plink;
-                info.Arguments = ConnectionString;
-                info.WindowStyle = ProcessWindowStyle.Minimized;
-                #if !DEBUG
-                info.UseShellExecute = false;
-                info.CreateNoWindow = true;
-                #endif
-                return info;
+                if (Instance != null)
+                {
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.FileName = Toast.Instance.settings.Plink;
+                    info.Arguments = ConnectionString;
+                    info.WindowStyle = ProcessWindowStyle.Minimized;
+                    #if !DEBUG
+                        info.UseShellExecute = false;
+                        info.CreateNoWindow = true;
+                    #endif
+                    return info;
+                }
+                return null;
             }
         }
 
