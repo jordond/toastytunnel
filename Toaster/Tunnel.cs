@@ -99,7 +99,7 @@ namespace Toaster
             {
                 if (Instance == null)                
                 {
-                    Toast.Instance.logger.Add(Levels.INFO, "Cannot stop, it was never started");
+                    Toast.Instance.logger.Add(Levels.INFO, "Skipping tunnel, already closed.");
                 }
                 else if (Instance.HasExited)
                 {

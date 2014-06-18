@@ -42,15 +42,12 @@ namespace Toasty
                 s.ID = i.ID;
                 s.Name = i.Name;
                 s.User = i.User;
-                if (i.Password != "" || i.Password != null)
+                if (!string.IsNullOrEmpty(i.Password))
                     s.Password = "YES";
                 else
                     s.Password = "NO";
-                if (i.PrivateKey != "" || i.PrivateKey != null)
-                {
+                if (!string.IsNullOrEmpty(i.PrivateKey))
                     s.PrivateKey = System.IO.Path.GetFileName(i.PrivateKey);
-                    s.PrivateKeyFull = i.PrivateKey;
-                }
                 else
                     s.PrivateKey = "NO";
                 
@@ -141,11 +138,15 @@ namespace Toasty
             clearTextBoxes();
             if (lstIdentities.SelectedItem != null)
             {
-                IdentityItem i = lstIdentities.SelectedItem as IdentityItem;
-                txtIName.Text = i.Name;
-                txtUsername.Text = i.User;
-                txtPassword.Password = i.Password;
-                txtPrivateKey.Text = i.PrivateKeyFull;
+                IdentityItem ii = lstIdentities.SelectedItem as IdentityItem;
+                Identity i = _toaster.settings.Identities.First(a => a.ID == ii.ID);
+                if (i != null)
+                {
+                    txtIName.Text = i.Name;
+                    txtUsername.Text = i.User;
+                    txtPassword.Password = i.Password;
+                    txtPrivateKey.Text = i.PrivateKey;
+                }
             }
         }
     }
@@ -157,6 +158,5 @@ namespace Toasty
         public string User { get; set; }
         public string Password { get; set; }
         public string PrivateKey { get; set; }
-        public string PrivateKeyFull { get; set; }
     }
 }
