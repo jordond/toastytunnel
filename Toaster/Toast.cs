@@ -38,16 +38,6 @@ namespace Toaster
             {
                 throw new Exception(ex.Message);
             }
-            
-        }
-
-        public void debugCreate()
-        {
-            
-        }
-        public void debugKill()
-        {
-            
         }
 
         public void saveSettings()

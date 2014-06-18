@@ -114,7 +114,7 @@ namespace Toasty
 
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
-            _toaster.saveSettings();
+            
         }
 
         private void findPlink()
@@ -145,6 +145,7 @@ namespace Toasty
             timer.Stop();
             _toaster.tunnels.Stop();
             _toaster.saveSettings();
+            log.Add(Levels.INFO, "Closing gracefully.");
             Environment.Exit(0);
         }
 

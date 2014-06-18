@@ -11,15 +11,14 @@ namespace Toaster
 {
     public class Tunnel
     {
-        //private Log log = Log.Instance;
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public Identity identity { get; set; }
-        public string Host { get; set; }
-        public int Port { get; set; }
-        public int LocalPort { get; set; }
+        public int ID               { get; set; }
+        public string Name          { get; set; }
+        public Identity identity    { get; set; }
+        public string Host          { get; set; }
+        public int Port             { get; set; }
+        public int LocalPort        { get; set; }
         public string RemoteAddress { get; set; }
-        public int RemotePort { get; set; }
+        public int RemotePort       { get; set; }
         public string ConnectionString
         {
             get
@@ -40,9 +39,8 @@ namespace Toaster
 
                 return cs.ToString();
             }
-            set { }
         }        
-        public bool autoStart { get; set; }
+        public bool autoStart       { get; set; }
         public bool isOpen
         {
             get
@@ -53,7 +51,7 @@ namespace Toaster
             }
             set { }
         }
-        public Process Instance { get; set; }        
+        public Process Instance     { get; set; }        
         public ProcessStartInfo InstanceInfo
         {
             get 
