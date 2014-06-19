@@ -60,7 +60,7 @@ namespace Toaster
                     ProcessStartInfo info = new ProcessStartInfo();
                     info.FileName = Toast.Instance.settings.Plink;
                     info.Arguments = ConnectionString;
-                    info.WindowStyle = ProcessWindowStyle.Minimized;
+                    info.WindowStyle = ProcessWindowStyle.Hidden;
                     //info.RedirectStandardOutput = true;
                     //info.RedirectStandardError = true;
                     //info.UseShellExecute = false;
