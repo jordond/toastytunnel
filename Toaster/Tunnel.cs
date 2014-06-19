@@ -36,7 +36,6 @@ namespace Toaster
                     cs.Append("-p " + Port + " ");
                 if (!File.Exists(identity.PrivateKey) || identity.Password != null)
                     cs.Append("-pw " + identity.Password);
-
                 return cs.ToString();
             }
         }        
@@ -62,6 +61,9 @@ namespace Toaster
                     info.FileName = Toast.Instance.settings.Plink;
                     info.Arguments = ConnectionString;
                     info.WindowStyle = ProcessWindowStyle.Minimized;
+                    //info.RedirectStandardOutput = true;
+                    //info.RedirectStandardError = true;
+                    //info.UseShellExecute = false;
                     #if !DEBUG
                         info.UseShellExecute = false;
                         info.CreateNoWindow = true;
@@ -77,20 +79,50 @@ namespace Toaster
             //Instance = new Process();
         }
 
+        public void acceptHostKey()
+        {
+            using (Process p = new Process())
+            {
+                p.StartInfo.FileName = "cmd.exe";
+                StringBuilder s = new StringBuilder();
+                s.Append("/c echo y | ");
+                s.Append(Toast.Instance.settings.Plink + " ");
+                s.Append(ConnectionString);
+                p.StartInfo.Arguments = s.ToString();
+                p.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                //p.StartInfo.UseShellExecute = false;
+                //p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                p.Kill();
+            }            
+        }
+
         //per tunnel start
         public void Start()
         {
             try
             {
+                acceptHostKey();
                 Instance = new Process();
                 Instance.StartInfo = InstanceInfo;
                 Toast.Instance.logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
+                //Instance.OutputDataReceived += new DataReceivedEventHandler(outputHandler);
                 isOpen = Instance.Start();
+                //Instance.BeginOutputReadLine();
+                //Instance.WaitForExit();
             }
             catch (Exception ex)
             {
                 Toast.Instance.logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
                 throw new Exception("Tunnel.cs - start() - " + ex.Message);
+            }
+        }
+
+        private static void outputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        {
+            if (!String.IsNullOrEmpty(outLine.Data))
+            {
+                Toast.Instance.logger.Add(Levels.INFO, outLine.Data);
             }
         }
 
@@ -110,7 +142,8 @@ namespace Toaster
                 else
                 {
                     Toast.Instance.logger.Add(Levels.INFO, "Collapsing the " + Name + " tunnel.");                    
-                    Instance.Kill();                    
+                    Instance.Kill();
+                    Instance.Close();
                 }
                 Instance = null;
                 isOpen = false;
@@ -136,7 +169,6 @@ namespace Toaster
             s.AppendLine(identity.PrivateKey == "" ? "Key: none"
                         : "Key: " + Path.GetFileName(identity.PrivateKey));
             s.AppendLine("Password: " + identity.Password == "" ? "Password: none" : "Password: yes");
-            s.AppendLine("Quick Connect: " + identity.Save);
             return s.ToString();
         }
     }

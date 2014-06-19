@@ -40,7 +40,7 @@ namespace Toasty
                 timer.Start();
 
                 //autostart
-                _toaster.tunnels.Start();
+                //_toaster.tunnels.Start();
             }
             catch (Exception ex)
             {
