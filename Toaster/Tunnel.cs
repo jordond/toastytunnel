@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Logger;
 
 namespace Toaster
@@ -61,13 +62,12 @@ namespace Toaster
                     info.FileName = Toast.Instance.settings.Plink;
                     info.Arguments = ConnectionString;
                     info.WindowStyle = ProcessWindowStyle.Hidden;
-                    //info.RedirectStandardOutput = true;
-                    //info.RedirectStandardError = true;
-                    //info.UseShellExecute = false;
-                    #if !DEBUG
-                        info.UseShellExecute = false;
-                        info.CreateNoWindow = true;
-                    #endif
+                    info.RedirectStandardOutput = true;
+                    info.RedirectStandardError = true;
+                    info.RedirectStandardInput = true;
+                    info.UseShellExecute = false;
+                    info.CreateNoWindow = true;
+                    
                     return info;
                 }
                 return null;
@@ -91,7 +91,7 @@ namespace Toaster
                 p.StartInfo.Arguments = s.ToString();
                 p.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                 //p.StartInfo.UseShellExecute = false;
-                //p.StartInfo.CreateNoWindow = true;
+                //p.StartInfo.CreateNoWindow = false;
                 p.Start();
                 p.Kill();
             }            
@@ -106,9 +106,12 @@ namespace Toaster
                 Instance = new Process();
                 Instance.StartInfo = InstanceInfo;
                 Toast.Instance.logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
-                //Instance.OutputDataReceived += new DataReceivedEventHandler(outputHandler);
                 isOpen = Instance.Start();
-                //Instance.BeginOutputReadLine();
+
+                m_objLock = new Object();
+                AsyncReadFeedback(Instance.StandardOutput);
+                AsyncReadFeedback(Instance.StandardError);
+
                 //Instance.WaitForExit();
             }
             catch (Exception ex)
@@ -118,11 +121,23 @@ namespace Toaster
             }
         }
 
-        private static void outputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        private Object m_objLock; // lock object
+
+        public void AsyncReadFeedback(StreamReader strr)
         {
-            if (!String.IsNullOrEmpty(outLine.Data))
+            Thread trdr = new Thread(new ParameterizedThreadStart(__ctReadFeedback));
+            trdr.Start(strr);
+        }
+
+        public void __ctReadFeedback(Object objStreamReader)
+        {
+            StreamReader strr = (StreamReader)objStreamReader;
+            string line;
+            while (!strr.EndOfStream)
             {
-                Toast.Instance.logger.Add(Levels.INFO, outLine.Data);
+                line = strr.ReadLine();
+                if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
+                    lock (m_objLock) { Toast.Instance.logger.Add(Levels.INFO,line); }
             }
         }
 
