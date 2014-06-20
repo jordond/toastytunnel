@@ -5,21 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Logger;
 
 namespace Toaster
 {
     public class Tunnel
     {
-        private Log logger = Log.Instance;
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public Identity identity { get; set; }
-        public string Host { get; set; }
-        public int Port { get; set; }
-        public int LocalPort { get; set; }
+        public int ID               { get; set; }
+        public string Name          { get; set; }
+        public Identity identity    { get; set; }
+        public string Host          { get; set; }
+        public int Port             { get; set; }
+        public int LocalPort        { get; set; }
         public string RemoteAddress { get; set; }
-        public int RemotePort { get; set; }
+        public int RemotePort       { get; set; }
         public string ConnectionString
         {
             get
@@ -37,12 +37,10 @@ namespace Toaster
                     cs.Append("-p " + Port + " ");
                 if (!File.Exists(identity.PrivateKey) || identity.Password != null)
                     cs.Append("-pw " + identity.Password);
-
                 return cs.ToString();
             }
-            set { }
         }        
-        public bool autoStart { get; set; }
+        public bool autoStart       { get; set; }
         public bool isOpen
         {
             get
@@ -53,27 +51,30 @@ namespace Toaster
             }
             set { }
         }
-        public Process Instance { get; set; }        
+        public Process Instance     { get; set; }        
         public ProcessStartInfo InstanceInfo
         {
             get 
             {
-                ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = Toast.Instance.settings.Plink;
-                info.Arguments = ConnectionString;
-                info.WindowStyle = ProcessWindowStyle.Minimized;
-                #if !DEBUG
-                info.UseShellExecute = false;
-                info.CreateNoWindow = true;
-                #endif
-                return info;
+                if (Instance != null)
+                {
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.FileName = Toast.Instance.settings.Plink;
+                    info.Arguments = ConnectionString;
+                    info.WindowStyle = ProcessWindowStyle.Hidden;
+                    info.RedirectStandardOutput = true;
+                    info.RedirectStandardError = true;
+                    info.RedirectStandardInput = true;
+                    info.UseShellExecute = false;
+                    info.CreateNoWindow = true;
+                    
+                    return info;
+                }
+                return null;
             }
         }
-
-        public Tunnel()
-        {
-            //Instance = new Process();
-        }
+        private Object _lock;
+        public List<string> sshErrors = new List<string>();
 
         //per tunnel start
         public void Start()
@@ -82,12 +83,14 @@ namespace Toaster
             {
                 Instance = new Process();
                 Instance.StartInfo = InstanceInfo;
-                logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
+                Toast.Instance.logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();
+                _lock = new Object();
+                asyncReadErrors(Instance.StandardError);
             }
             catch (Exception ex)
             {
-                logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
+                Toast.Instance.logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
                 throw new Exception("Tunnel.cs - start() - " + ex.Message);
             }
         }
@@ -97,21 +100,61 @@ namespace Toaster
         {
             try
             {
-                if (Instance.HasExited)
+                if (Instance == null)                
                 {
-                    logger.Add(Levels.WARNING, Name + " has already collapsed...");
+                    Toast.Instance.logger.Add(Levels.INFO, "Skipping tunnel, already closed.");
+                }
+                else if (Instance.HasExited)
+                {
+                    Toast.Instance.logger.Add(Levels.INFO, Name + " has already collapsed");
                 }
                 else
                 {
-                    logger.Add(Levels.INFO, "Collapsing the " + Name + " tunnel.");
+                    Toast.Instance.logger.Add(Levels.INFO, "Collapsing the " + Name + " tunnel.");                    
                     Instance.Kill();
+                    Instance.Close();
                 }
+                Instance = null;
                 isOpen = false;
             }
             catch (Exception ex)
             {
-                logger.Add(Levels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
+                Toast.Instance.logger.Add(Levels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
                 throw new Exception("Tunnel.cs - stop() - " + ex.Message);
+            }
+        }
+
+        public void acceptkey()
+        {
+            if (sshErrors.Count() != 0)
+            {
+                StreamWriter s = Instance.StandardInput;
+                s.WriteLine("y");
+            }
+        }
+
+        private void asyncReadErrors(StreamReader s)
+        {
+            Thread t = new Thread(new ParameterizedThreadStart(__ctReadErrors));
+            t.Start(s);
+        }
+
+        private void __ctReadErrors(Object objStreamReader)
+        {
+            StreamReader s = (StreamReader)objStreamReader;
+            string line;
+            while (!s.EndOfStream)
+            {
+                line = s.ReadLine();
+                if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
+                    lock (_lock) 
+                    {
+                        if (line != "Store key in cache? (y/n) ")
+                        {
+                            sshErrors.Add(line);
+                            Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line);
+                        }
+                    }
             }
         }
 
@@ -129,7 +172,6 @@ namespace Toaster
             s.AppendLine(identity.PrivateKey == "" ? "Key: none"
                         : "Key: " + Path.GetFileName(identity.PrivateKey));
             s.AppendLine("Password: " + identity.Password == "" ? "Password: none" : "Password: yes");
-            s.AppendLine("Quick Connect: " + identity.Save);
             return s.ToString();
         }
     }

@@ -5,19 +5,20 @@
     <Grid>
         <GroupBox Header="Identity" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="250" Width="362">
             <Grid>
-                <ListView x:Name="lstIdentities" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="340">
+                <ListView x:Name="lstIdentities" HorizontalAlignment="Left" Height="137" VerticalAlignment="Top" Width="340" SelectionChanged="lstIdentities_SelectionChanged">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Height" Value="25" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Name" Width="70" DisplayMemberBinding="{Binding Name}" />
-                            <GridViewColumn Header="User" Width="70" DisplayMemberBinding="{Binding User}" />
-                            <GridViewColumn Header="Password" Width="57" DisplayMemberBinding="{Binding Password}" />
-                            <GridViewColumn Header="Key" Width="65" DisplayMemberBinding="{Binding PrivateKey}" />
-                            <GridViewColumn Header="Delete" Width="45">
+                            <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="User" Width="Auto" DisplayMemberBinding="{Binding User}" />
+                            <GridViewColumn Header="Password" Width="Auto" DisplayMemberBinding="{Binding Password}" />
+                            <GridViewColumn Header="Key" Width="Auto" DisplayMemberBinding="{Binding PrivateKey}" />
+                            <GridViewColumn Header="Delete" Width="Auto">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Height="20" Width="20" Padding="0" Margin="0" Content="x" Click="Delete" CommandParameter="{Binding}"/>
@@ -53,7 +54,7 @@
                 <CheckBox x:Name="chkAuto" Content="Auto Start" HorizontalAlignment="Left" Margin="244,75,0,0" VerticalAlignment="Top"/>
                 <Label Content="Nickname: " HorizontalAlignment="Left" Margin="6,7,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtTName" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="113"/>
-                <TextBox x:Name="txtSshPort" HorizontalAlignment="Left" Height="23" Margin="272,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="43"/>
+                <TextBox x:Name="txtSshPort" HorizontalAlignment="Left" Height="23" Margin="272,41,0,0" TextWrapping="Wrap" Text="22" VerticalAlignment="Top" Width="43"/>
                 <Label Content=":" HorizontalAlignment="Left" Margin="261,37,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.692,0.533" Height="24"/>
 
             </Grid>

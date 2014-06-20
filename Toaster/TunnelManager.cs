@@ -10,11 +10,23 @@ namespace Toaster
     {
         public List<Tunnel> Tunnels { get; set; }
 
+        public int Count()
+        {
+            return Tunnels.Count();
+        }
+
+        /// <summary>
+        /// Default tunnel manager constructor 
+        /// </summary>
+        /// <param name="t">List of tunnels to be added</param>
         public TunnelManager(List<Tunnel> t)
         {
             Tunnels = t;
         }
 
+        /// <summary>
+        /// Returns a list of all of the tunnels contained in the tunnel manager
+        /// </summary>
         public List<Tunnel> All
         {
             get
@@ -23,6 +35,9 @@ namespace Toaster
             }
         }
 
+        /// <summary>
+        /// Returns all tunnels that are currently open
+        /// </summary>
         public List<Tunnel> Open
         {
             get
@@ -34,14 +49,25 @@ namespace Toaster
             }
         }
 
+        /// <summary>
+        /// Add a tunnel to the tunnel manager.
+        /// </summary>
+        /// <param name="t">Tunnel object</param>
         public void Add(Tunnel t)
         {
             Tunnels.Add(t);
         }
 
-        
+        public Tunnel Find(int id)
+        {
+            return (Tunnel)Tunnels.Where(t => t.ID == id);
+        }
+                
         #region Tunnel Start Methods
-        //autostart 
+        /// <summary>
+        /// Default start method for tunnels, it will start all tunnels with 
+        /// auto start flag set to true.
+        /// </summary>
         public void Start()
         {
             try
@@ -55,7 +81,11 @@ namespace Toaster
             }
         }
 
-        //start single
+        /// <summary>
+        /// Will start a single tunnel with the matching passed
+        /// through ID.
+        /// </summary>
+        /// <param name="tunnelID">ID of tunnel</param>
         public void Start(int tunnelID)
         {
             try
@@ -68,7 +98,11 @@ namespace Toaster
             }
         }
 
-        //start multiple
+        /// <summary>
+        /// Attmepts to start multiple tunnels, based on the passed
+        /// through list of tunnel ids.
+        /// </summary>
+        /// <param name="tunnelIDs">IDs of tunnels to be started.</param>
         public void Start(List<int> tunnelIDs)
         {
             try
@@ -86,7 +120,9 @@ namespace Toaster
         #endregion
 
         #region Tunnel Stop Methods
-        //stop all
+        /// <summary>
+        /// Will attempt to stop all of the tunnels that have been stored.
+        /// </summary>
         public void Stop()
         {
             try
@@ -100,7 +136,10 @@ namespace Toaster
             }
         }
 
-        //stop single
+        /// <summary>
+        /// Stops a single tunnel
+        /// </summary>
+        /// <param name="tunnelID">ID of tunnel</param>
         public void Stop(int tunnelID)
         {
             try
@@ -113,7 +152,11 @@ namespace Toaster
             }
         }
 
-        //stop multiple
+        /// <summary>
+        /// Stops multiple tunnels, based on the passed in list of
+        /// tunnels.
+        /// </summary>
+        /// <param name="tunnelIDs">ID's of tunnels to be stopped</param>
         public void Stop(List<int> tunnelIDs)
         {
             try

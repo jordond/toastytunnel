@@ -25,6 +25,7 @@ namespace Toasty
     {
         private Toast _toaster = Toast.Instance;
         private Log _log = Log.Instance;
+        private Identity _identity;
 
         public NewTunnel()
         {
@@ -42,11 +43,11 @@ namespace Toasty
                 s.ID = i.ID;
                 s.Name = i.Name;
                 s.User = i.User;
-                if (i.Password != "" || i.Password != null)
+                if (!string.IsNullOrEmpty(i.Password))
                     s.Password = "YES";
                 else
                     s.Password = "NO";
-                if (i.PrivateKey != "" || i.PrivateKey != null)
+                if (!string.IsNullOrEmpty(i.PrivateKey))
                     s.PrivateKey = System.IO.Path.GetFileName(i.PrivateKey);
                 else
                     s.PrivateKey = "NO";
@@ -76,13 +77,13 @@ namespace Toasty
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
-            Random rnd = new Random();
-
             Identity i = new Identity();
-            i.ID = _toaster.settings.Identities.Count() + 1;
             i.Name = txtIName.Text;
             i.User = txtUsername.Text;
-            i.PrivateKey = txtPrivateKey.Text;
+            if (txtPrivateKey.Text != "")
+                i.PrivateKey = txtPrivateKey.Text;
+            if (txtPassword.Password != "")
+                i.Password = txtPassword.Password;
             i.Save = (bool)chkSave.IsChecked;
 
             Tunnel n = new Tunnel();
@@ -100,8 +101,20 @@ namespace Toasty
             n.autoStart = (bool)chkAuto.IsChecked;
 
             _toaster.tunnels.Add(n);
-            _toaster.settings.Identities.Add(i);
-                        
+
+            if (_identity == null)
+            {
+                i.ID = _toaster.settings.Identities.Count() + 1;
+                _toaster.settings.Identities.Add(i);
+            }
+            else
+            {
+                int oldID = _identity.ID;
+                _identity = i;
+                _identity.ID = oldID;
+            }
+            
+
             this.Close();
         }
 
@@ -120,6 +133,32 @@ namespace Toasty
 
             if (result == true)
                 txtPrivateKey.Text = openDialog.FileName;
+        }
+
+        private void clearTextBoxes()
+        {
+            txtIName.Text = "";
+            txtUsername.Text = "";
+            txtPassword.Password = "";
+            txtPrivateKey.Text = "";
+        }
+
+        private void lstIdentities_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            clearTextBoxes();
+            if (lstIdentities.SelectedItem != null)
+            {
+                IdentityItem ii = lstIdentities.SelectedItem as IdentityItem;
+                Identity i = _toaster.settings.Identities.First(a => a.ID == ii.ID);
+                if (i != null)
+                {
+                    _identity = i;
+                    txtIName.Text = i.Name;
+                    txtUsername.Text = i.User;
+                    txtPassword.Password = i.Password;
+                    txtPrivateKey.Text = i.PrivateKey;
+                }
+            }
         }
     }
 

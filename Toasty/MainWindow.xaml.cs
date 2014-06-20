@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Windows.Threading;
 using Toaster;
 using Logger;
 
@@ -22,7 +22,8 @@ namespace Toasty
     {
         public static Toast _toaster;
         public static NewTunnel newTunnel;
-        private Log _log = Log.Instance;
+        private DispatcherTimer timer;
+        private Log log = Log.Instance;
 
         public MainWindow()
         {
@@ -33,8 +34,13 @@ namespace Toasty
                 if (!_toaster.settings.plinkExists() )
                     findPlink();
 
-                loadListView();
+                timer = new DispatcherTimer();
+                timer.Interval = new TimeSpan(0, 0, 1);
+                timer.Tick += new EventHandler(timerTick);
+                timer.Start();
 
+                //autostart
+                //_toaster.tunnels.Start();
             }
             catch (Exception ex)
             {
@@ -42,7 +48,14 @@ namespace Toasty
             }
         }
 
-        private void loadListView()
+        private void timerTick(object sender, EventArgs e)
+        {
+            loadListView();
+            if (_toaster.tunnels.Count() != 0)
+                checkErrors();
+        }
+
+        public void loadListView()
         {
             lstTunnels.Items.Clear();
             foreach (Tunnel t in _toaster.tunnels.All)
@@ -50,11 +63,11 @@ namespace Toasty
                 TunnelItem ti = new TunnelItem();
                 ti.ID = t.ID;
                 ti.Name = t.Name;
-                ti.TunnelDesc = t.identity.User + "@" + t.Host;
+                ti.TunnelDesc = t.identity.User + "@" + t.Host + " ";
                 if (t.LocalPort != 0 || t.RemoteAddress != null)
-                    ti.Port = t.LocalPort + "==" + t.RemoteAddress + ":" + t.RemotePort;
+                    ti.TunnelDesc += t.LocalPort + ":" + t.RemoteAddress + ":" + t.RemotePort;
                 else
-                    ti.Port = "D" + t.RemotePort;
+                    ti.TunnelDesc += "D" + t.RemotePort;
                 ti.Active = t.isOpen;
 
                 lstTunnels.Items.Add(ti);
@@ -63,15 +76,24 @@ namespace Toasty
 
         private void Start(object sender, RoutedEventArgs e)
         {
-            Button b = sender as Button;
-            TunnelItem item = b.CommandParameter as TunnelItem;
-            
-            if (!item.Active)
+            if (!_toaster.settings.plinkExists())
             {
-                _log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
-                _toaster.tunnels.Start(item.ID);
+                log.Add(Levels.WARNING, "Can't build tunnel, plink not found.");
+                findPlink();
             }
-            loadListView();
+            else
+            {
+                Button b = sender as Button;
+                TunnelItem item = b.CommandParameter as TunnelItem;
+
+                if (!item.Active)
+                {
+                    log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
+                    _toaster.tunnels.Start(item.ID);
+
+                }
+                loadListView();
+            }
         }
 
         private void Stop(object sender, RoutedEventArgs e)
@@ -81,10 +103,52 @@ namespace Toasty
 
             if (item.Active)
             {
-                _log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
+                log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
                 _toaster.tunnels.Stop(item.ID);
             }
             loadListView();
+        }
+
+        private void checkErrors()
+        {
+            List<Tunnel> all = _toaster.tunnels.All;
+            foreach (Tunnel t in all.Where(tt => tt.sshErrors.Count() != 0))
+            {
+                MessageBoxButton choice = new MessageBoxButton();
+                string title = "";
+                if (t.sshErrors[0] == "The server's host key is not cached in the registry. You" ||
+                    t.sshErrors[0] == "WARNING - POTENTIAL SECURITY BREACH!")
+                {
+                    choice = MessageBoxButton.YesNo;
+                    title = "Accept or update " + t.Host + "'s Host key";
+                }
+                else
+                {
+                    choice = MessageBoxButton.OK;
+                    title = "Server Error has Occurred";
+                }
+
+                StringBuilder s = new StringBuilder();
+                for (int i = 0; i < t.sshErrors.Count(); i++)
+                    s.Append(t.sshErrors[i].ToString() + "\n");
+
+                MessageBoxResult r = MessageBox.Show("Message Recieved: \n\n" + s.ToString(), title, choice, MessageBoxImage.Question);
+                if (r == MessageBoxResult.Yes)
+                {
+                    t.acceptkey();
+                    log.Add(Levels.INFO, "Accepting or updating the SSH Server's Host Key.");
+                    t.sshErrors.Clear();
+                }
+                else if (r == MessageBoxResult.No)
+                {
+                    log.Add(Levels.WARNING, "Refusing the new Host key, terminating.");
+                    _toaster.tunnels.Stop(t.ID);
+                }
+                else
+                {
+                    t.sshErrors.Clear();
+                }
+            }
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
@@ -93,16 +157,9 @@ namespace Toasty
             newTunnel.Show();
         }
 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-            _toaster.tunnels.Stop();
-            _toaster.saveSettings();
-            Environment.Exit(0);
-        }
-
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
-            _toaster.saveSettings();
+            
         }
 
         private void findPlink()
@@ -117,23 +174,37 @@ namespace Toasty
 
             //Show the dialog box to the user
             Nullable<bool> result = openDialog.ShowDialog();
+            log.Add(Levels.INFO, "The search for plink begins!");
 
             if (result == true)
+            {
                 _toaster.settings.Plink = openDialog.FileName;
+                log.Add(Levels.INFO, "Plink was found at '" + _toaster.settings.Plink + "'.");
+            }
+            else
+                log.Add(Levels.WARNING, "You gave up on finding plink...");
+        }
+        #region Closing methods
+        private void close()
+        {
+            timer.Stop();
+            _toaster.tunnels.Stop();
+            _toaster.saveSettings();
+            log.Add(Levels.INFO, "Closing gracefully.");
+            Environment.Exit(0);
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            close();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
-            {
-                _toaster.tunnels.Stop();
-                _toaster.saveSettings();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error has occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            e.Cancel = true;
+            close();
         }
+        #endregion
     }
 
     public class TunnelItem

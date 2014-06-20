@@ -38,34 +38,31 @@ namespace Toaster
             {
                 throw new Exception(ex.Message);
             }
-            
-        }
-
-        public void debugCreate()
-        {
-            
-        }
-        public void debugKill()
-        {
-            
         }
 
         public void saveSettings()
         {
-            List<Identity> temp = new List<Identity>();
-            foreach (Identity i in settings.Identities)
+            try
             {
-                if (i.Save == true)
+                List<Identity> temp = new List<Identity>();
+                foreach (Identity i in settings.Identities)
                 {
-                    temp.Add(i);
-                    logger.Add(Levels.INFO, "Saving identity: " + i.Name);
+                    if (i.Save == true)
+                    {
+                        temp.Add(i);
+                        logger.Add(Levels.INFO, "Saving identity: " + i.Name);
+                    }
                 }
+                settings.Identities = temp;
+                foreach (Tunnel t in tunnels.All)
+                    logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
+                settings.Tunnels = tunnels.All;
+                settings.Save();
             }
-            settings.Identities = temp;
-            foreach (Tunnel t in tunnels.All)
-                logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
-            settings.Tunnels = tunnels.All;
-            settings.Save();
+            catch (Exception ex)
+            {
+                logger.Add(Levels.ERROR, "Toast - saveSettings(): " + ex.Message);
+            }
         }
 
         public void loadSettings()
