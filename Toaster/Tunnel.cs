@@ -74,7 +74,7 @@ namespace Toaster
             }
         }
         private Object _lock;
-        public List<string> sshErrors { get; set; }
+        public List<string> sshErrors = new List<string>();
 
         //per tunnel start
         public void Start()
@@ -85,7 +85,6 @@ namespace Toaster
                 Instance.StartInfo = InstanceInfo;
                 Toast.Instance.logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();
-                sshErrors = new List<string>();
                 _lock = new Object();
                 asyncReadErrors(Instance.StandardError);
             }
@@ -150,8 +149,11 @@ namespace Toaster
                 if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
                     lock (_lock) 
                     {
-                        sshErrors.Add(line);
-                        Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line); 
+                        if (line != "Store key in cache? (y/n) ")
+                        {
+                            sshErrors.Add(line);
+                            Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line);
+                        }
                     }
             }
         }

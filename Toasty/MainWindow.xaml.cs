@@ -51,7 +51,8 @@ namespace Toasty
         private void timerTick(object sender, EventArgs e)
         {
             loadListView();
-            checkErrors();
+            if (_toaster.tunnels.Count() != 0)
+                checkErrors();
         }
 
         public void loadListView()
@@ -110,21 +111,42 @@ namespace Toasty
 
         private void checkErrors()
         {
-            List<Tunnel> open = _toaster.tunnels.Open;
-            foreach (Tunnel t in open.Where(tt => tt.sshErrors.Count() != 0))
+            List<Tunnel> all = _toaster.tunnels.All;
+            foreach (Tunnel t in all.Where(tt => tt.sshErrors.Count() != 0))
             {
-                MessageBoxResult r = MessageBox.Show("Server Message: \n\n" + string.Join(" ", t.sshErrors.ToArray()), 
-                    "Interaction Required", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxButton choice = new MessageBoxButton();
+                string title = "";
+                if (t.sshErrors[0] == "The server's host key is not cached in the registry. You" ||
+                    t.sshErrors[0] == "WARNING - POTENTIAL SECURITY BREACH!")
+                {
+                    choice = MessageBoxButton.YesNo;
+                    title = "Accept or update " + t.Host + "'s Host key";
+                }
+                else
+                {
+                    choice = MessageBoxButton.OK;
+                    title = "Server Error has Occurred";
+                }
+
+                StringBuilder s = new StringBuilder();
+                for (int i = 0; i < t.sshErrors.Count(); i++)
+                    s.Append(t.sshErrors[i].ToString() + "\n");
+
+                MessageBoxResult r = MessageBox.Show("Message Recieved: \n\n" + s.ToString(), title, choice, MessageBoxImage.Question);
                 if (r == MessageBoxResult.Yes)
                 {
                     t.acceptkey();
                     log.Add(Levels.INFO, "Accepting or updating the SSH Server's Host Key.");
                     t.sshErrors.Clear();
                 }
-                else
+                else if (r == MessageBoxResult.No)
                 {
                     log.Add(Levels.WARNING, "Refusing the new Host key, terminating.");
                     _toaster.tunnels.Stop(t.ID);
+                }
+                else
+                {
+                    t.sshErrors.Clear();
                 }
             }
         }

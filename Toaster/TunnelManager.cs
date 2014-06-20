@@ -10,6 +10,11 @@ namespace Toaster
     {
         public List<Tunnel> Tunnels { get; set; }
 
+        public int Count()
+        {
+            return Tunnels.Count();
+        }
+
         /// <summary>
         /// Default tunnel manager constructor 
         /// </summary>
