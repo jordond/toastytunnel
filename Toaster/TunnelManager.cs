@@ -53,7 +53,11 @@ namespace Toaster
             Tunnels.Add(t);
         }
 
-        
+        public Tunnel Find(int id)
+        {
+            return (Tunnel)Tunnels.Where(t => t.ID == id);
+        }
+                
         #region Tunnel Start Methods
         /// <summary>
         /// Default start method for tunnels, it will start all tunnels with 

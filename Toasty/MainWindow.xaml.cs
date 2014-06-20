@@ -51,6 +51,7 @@ namespace Toasty
         private void timerTick(object sender, EventArgs e)
         {
             loadListView();
+            checkErrors();
         }
 
         public void loadListView()
@@ -88,6 +89,7 @@ namespace Toasty
                 {
                     log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
                     _toaster.tunnels.Start(item.ID);
+
                 }
                 loadListView();
             }
@@ -104,6 +106,27 @@ namespace Toasty
                 _toaster.tunnels.Stop(item.ID);
             }
             loadListView();
+        }
+
+        private void checkErrors()
+        {
+            List<Tunnel> open = _toaster.tunnels.Open;
+            foreach (Tunnel t in open.Where(tt => tt.sshErrors.Count() != 0))
+            {
+                MessageBoxResult r = MessageBox.Show("Server Message: \n\n" + string.Join(" ", t.sshErrors.ToArray()), 
+                    "Interaction Required", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (r == MessageBoxResult.Yes)
+                {
+                    t.acceptkey();
+                    log.Add(Levels.INFO, "Accepting or updating the SSH Server's Host Key.");
+                    t.sshErrors.Clear();
+                }
+                else
+                {
+                    log.Add(Levels.WARNING, "Refusing the new Host key, terminating.");
+                    _toaster.tunnels.Stop(t.ID);
+                }
+            }
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)

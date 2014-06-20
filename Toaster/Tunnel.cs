@@ -73,71 +73,26 @@ namespace Toaster
                 return null;
             }
         }
-
-        public Tunnel()
-        {
-            //Instance = new Process();
-        }
-
-        public void acceptHostKey()
-        {
-            using (Process p = new Process())
-            {
-                p.StartInfo.FileName = "cmd.exe";
-                StringBuilder s = new StringBuilder();
-                s.Append("/c echo y | ");
-                s.Append(Toast.Instance.settings.Plink + " ");
-                s.Append(ConnectionString);
-                p.StartInfo.Arguments = s.ToString();
-                p.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                //p.StartInfo.UseShellExecute = false;
-                //p.StartInfo.CreateNoWindow = false;
-                p.Start();
-                p.Kill();
-            }            
-        }
+        private Object _lock;
+        public List<string> sshErrors { get; set; }
 
         //per tunnel start
         public void Start()
         {
             try
             {
-                acceptHostKey();
                 Instance = new Process();
                 Instance.StartInfo = InstanceInfo;
                 Toast.Instance.logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();
-
-                m_objLock = new Object();
-                AsyncReadFeedback(Instance.StandardOutput);
-                AsyncReadFeedback(Instance.StandardError);
-
-                //Instance.WaitForExit();
+                sshErrors = new List<string>();
+                _lock = new Object();
+                asyncReadErrors(Instance.StandardError);
             }
             catch (Exception ex)
             {
                 Toast.Instance.logger.Add(Levels.ERROR, "Digging the " + Name + " tunnel failed: " + ex.Message);
                 throw new Exception("Tunnel.cs - start() - " + ex.Message);
-            }
-        }
-
-        private Object m_objLock; // lock object
-
-        public void AsyncReadFeedback(StreamReader strr)
-        {
-            Thread trdr = new Thread(new ParameterizedThreadStart(__ctReadFeedback));
-            trdr.Start(strr);
-        }
-
-        public void __ctReadFeedback(Object objStreamReader)
-        {
-            StreamReader strr = (StreamReader)objStreamReader;
-            string line;
-            while (!strr.EndOfStream)
-            {
-                line = strr.ReadLine();
-                if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
-                    lock (m_objLock) { Toast.Instance.logger.Add(Levels.INFO,line); }
             }
         }
 
@@ -167,6 +122,37 @@ namespace Toaster
             {
                 Toast.Instance.logger.Add(Levels.ERROR, "Could not collapse the " + Name + " tunnel: " + ex.Message);
                 throw new Exception("Tunnel.cs - stop() - " + ex.Message);
+            }
+        }
+
+        public void acceptkey()
+        {
+            if (sshErrors.Count() != 0)
+            {
+                StreamWriter s = Instance.StandardInput;
+                s.WriteLine("y");
+            }
+        }
+
+        private void asyncReadErrors(StreamReader s)
+        {
+            Thread t = new Thread(new ParameterizedThreadStart(__ctReadErrors));
+            t.Start(s);
+        }
+
+        private void __ctReadErrors(Object objStreamReader)
+        {
+            StreamReader s = (StreamReader)objStreamReader;
+            string line;
+            while (!s.EndOfStream)
+            {
+                line = s.ReadLine();
+                if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
+                    lock (_lock) 
+                    {
+                        sshErrors.Add(line);
+                        Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line); 
+                    }
             }
         }
 
