@@ -75,6 +75,7 @@ namespace Toaster
         }
         private Object _lock;
         public List<string> sshErrors = new List<string>();
+        public List<string> sshOutput = new List<string>();
 
         //per tunnel start
         public void Start()
@@ -86,7 +87,8 @@ namespace Toaster
                 Toast.Instance.logger.Add(Levels.INFO, "Digging the " + Name + " tunnel, with these specs: " + tunnelSpecs());
                 isOpen = Instance.Start();
                 _lock = new Object();
-                asyncReadErrors(Instance.StandardError);
+                asyncReadOutput(Instance.StandardError, 'e');
+                asyncReadOutput(Instance.StandardOutput, 'o');
             }
             catch (Exception ex)
             {
@@ -133,13 +135,13 @@ namespace Toaster
             }
         }
 
-        private void asyncReadErrors(StreamReader s)
+        private void asyncReadOutput(StreamReader s, char type)
         {
-            Thread t = new Thread(new ParameterizedThreadStart(__ctReadErrors));
-            t.Start(s);
+            Thread t = new Thread(() => __ctReadOutput(s, type));
+            t.Start();
         }
 
-        private void __ctReadErrors(Object objStreamReader)
+        private void __ctReadOutput(Object objStreamReader, char type)
         {
             StreamReader s = (StreamReader)objStreamReader;
             string line;
@@ -149,10 +151,18 @@ namespace Toaster
                 if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
                 lock (_lock) 
                 {
-                    if (line != "Store key in cache? (y/n) ")
+                    if (type == 'o')
                     {
-                        sshErrors.Add(line);
-                        Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line);
+                        sshOutput.Add(line);
+                        Toast.Instance.logger.Add(Levels.INFO, Name + ": " + line);
+                    }
+                    else if (type == 'e')
+                    {
+                        if (line != "Store key in cache? (y/n) ")
+                        {
+                            sshErrors.Add(line);
+                            Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line);
+                        }
                     }
                 }
             }

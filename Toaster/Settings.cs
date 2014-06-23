@@ -22,6 +22,17 @@ namespace Toaster
             Identities = new List<Identity>();
         }
 
+        public void save()
+        {
+            foreach (Tunnel t in Tunnels)
+            {
+                t.Instance = null;
+                t.sshErrors = new List<string>();
+                t.sshOutput = new List<string>();
+                Save();
+            }
+        }
+
         public bool plinkExists()
         {
             return File.Exists(Plink);

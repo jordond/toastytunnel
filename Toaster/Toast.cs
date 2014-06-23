@@ -57,7 +57,7 @@ namespace Toaster
                 foreach (Tunnel t in tunnels.All)
                     logger.Add(Levels.INFO, "Saving tunnel: " + t.Name);
                 settings.Tunnels = tunnels.All;
-                settings.Save();
+                settings.save();
             }
             catch (Exception ex)
             {
