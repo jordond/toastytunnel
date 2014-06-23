@@ -147,14 +147,14 @@ namespace Toaster
             {
                 line = s.ReadLine();
                 if (!string.IsNullOrWhiteSpace(line) || !string.IsNullOrEmpty(line))
-                    lock (_lock) 
+                lock (_lock) 
+                {
+                    if (line != "Store key in cache? (y/n) ")
                     {
-                        if (line != "Store key in cache? (y/n) ")
-                        {
-                            sshErrors.Add(line);
-                            Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line);
-                        }
+                        sshErrors.Add(line);
+                        Toast.Instance.logger.Add(Levels.WARNING, Name + ": " + line);
                     }
+                }
             }
         }
 
