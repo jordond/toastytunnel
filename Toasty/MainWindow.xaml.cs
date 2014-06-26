@@ -57,21 +57,23 @@ namespace Toasty
 
         public void loadListView()
         {
-            lstTunnels.Items.Clear();
-            foreach (Tunnel t in _toaster.tunnels.All)
-            {
-                TunnelItem ti = new TunnelItem();
-                ti.ID = t.ID;
-                ti.Name = t.Name;
-                ti.TunnelDesc = t.identity.User + "@" + t.Host + " ";
-                if (t.LocalPort != 0 || t.RemoteAddress != null)
-                    ti.TunnelDesc += t.LocalPort + ":" + t.RemoteAddress + ":" + t.RemotePort;
-                else
-                    ti.TunnelDesc += "D" + t.RemotePort;
-                ti.Active = t.isOpen;
+            //lstTunnels.Items.Clear();
+            lstTunnels.ItemsSource = _toaster.tunnels.All;
+            lstTunnels.Items.Refresh();
+            //foreach (Tunnel t in _toaster.tunnels.All)
+            //{
+            //    TunnelItem ti = new TunnelItem();
+            //    ti.ID = t.ID;
+            //    ti.Name = t.Name;
+            //    ti.TunnelDesc = t.identity.User + "@" + t.Host + " ";
+            //    if (t.LocalPort != 0 || t.RemoteAddress != null)
+            //        ti.TunnelDesc += t.LocalPort + ":" + t.RemoteAddress + ":" + t.RemotePort;
+            //    else
+            //        ti.TunnelDesc += "D" + t.RemotePort;
+            //    ti.Active = t.isOpen;
 
-                lstTunnels.Items.Add(ti);
-            }
+            //    lstTunnels.Items.Add(ti);
+            //}
         }
 
         private void Start(object sender, RoutedEventArgs e)
@@ -84,11 +86,11 @@ namespace Toasty
             else
             {
                 Button b = sender as Button;
-                TunnelItem item = b.CommandParameter as TunnelItem;
+                Tunnel item = b.CommandParameter as Tunnel;
 
-                if (!item.Active)
+                if (!item.isOpen)
                 {
-                    log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.TunnelDesc);
+                    log.Add(Levels.INFO, "Opening tunnel: " + item.Name + " - " + item.Description);
                     _toaster.tunnels.Start(item.ID);
 
                 }
@@ -99,11 +101,11 @@ namespace Toasty
         private void Stop(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
-            TunnelItem item = b.CommandParameter as TunnelItem;
+            Tunnel item = b.CommandParameter as Tunnel;
 
-            if (item.Active)
+            if (item.isOpen)
             {
-                log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.TunnelDesc);
+                log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.Description);
                 _toaster.tunnels.Stop(item.ID);
             }
             loadListView();
@@ -190,6 +192,7 @@ namespace Toasty
             timer.Stop();
             _toaster.tunnels.Stop();
             _toaster.saveSettings();
+            System.Threading.Thread.Sleep(1000);
             log.Add(Levels.INFO, "Closing gracefully.");
             Environment.Exit(0);
         }
@@ -205,14 +208,5 @@ namespace Toasty
             close();
         }
         #endregion
-    }
-
-    public class TunnelItem
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string TunnelDesc { get; set; }
-        public string Port { get; set; }
-        public bool Active { get; set; }
     }
 }

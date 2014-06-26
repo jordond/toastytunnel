@@ -39,7 +39,20 @@ namespace Toaster
                     cs.Append("-pw " + identity.Password);
                 return cs.ToString();
             }
-        }        
+        }
+        public string Description
+        {
+            get
+            {
+                StringBuilder d = new StringBuilder();
+                d.Append(identity.User + "@" + Host + " ");
+                if (LocalPort != 0 || RemoteAddress != null)
+                    d.Append(LocalPort + ":" + RemoteAddress + ":" + RemotePort);
+                else
+                    d.Append("D" + RemotePort);
+                return d.ToString();
+            }
+        }
         public bool autoStart       { get; set; }
         public bool isOpen
         {
@@ -102,7 +115,7 @@ namespace Toaster
             {
                 if (Instance == null)                
                 {
-                    Toast.Instance.logger.Add(Levels.INFO, "Skipping tunnel, already closed.");
+                    Toast.Instance.logger.Add(Levels.INFO, "Skipping tunnel " + Name);
                 }
                 else if (Instance.HasExited)
                 {

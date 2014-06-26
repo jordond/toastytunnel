@@ -17,8 +17,8 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Tunnel" Width="Auto" DisplayMemberBinding="{Binding TunnelDesc}" />
-                    <GridViewColumn Header="Open" Width="Auto" DisplayMemberBinding="{Binding Active}" />
+                    <GridViewColumn Header="Tunnel" Width="Auto" DisplayMemberBinding="{Binding Description}" />
+                    <GridViewColumn Header="Open" Width="Auto" DisplayMemberBinding="{Binding isOpen}" />
                     <GridViewColumn Header="Start" Width="Auto" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
