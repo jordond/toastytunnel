@@ -34,6 +34,8 @@ namespace Toasty
                 if (!_toaster.settings.plinkExists() )
                     findPlink();
 
+                lstTunnels.ItemsSource = _toaster.tunnels.All;
+
                 timer = new DispatcherTimer();
                 timer.Interval = new TimeSpan(0, 0, 1);
                 timer.Tick += new EventHandler(timerTick);
@@ -50,32 +52,11 @@ namespace Toasty
 
         private void timerTick(object sender, EventArgs e)
         {
-            loadListView();
+            lstTunnels.Items.Refresh();
             if (_toaster.tunnels.Count() != 0)
                 checkErrors();
         }
-
-        public void loadListView()
-        {
-            //lstTunnels.Items.Clear();
-            lstTunnels.ItemsSource = _toaster.tunnels.All;
-            lstTunnels.Items.Refresh();
-            //foreach (Tunnel t in _toaster.tunnels.All)
-            //{
-            //    TunnelItem ti = new TunnelItem();
-            //    ti.ID = t.ID;
-            //    ti.Name = t.Name;
-            //    ti.TunnelDesc = t.identity.User + "@" + t.Host + " ";
-            //    if (t.LocalPort != 0 || t.RemoteAddress != null)
-            //        ti.TunnelDesc += t.LocalPort + ":" + t.RemoteAddress + ":" + t.RemotePort;
-            //    else
-            //        ti.TunnelDesc += "D" + t.RemotePort;
-            //    ti.Active = t.isOpen;
-
-            //    lstTunnels.Items.Add(ti);
-            //}
-        }
-
+        
         private void Start(object sender, RoutedEventArgs e)
         {
             if (!_toaster.settings.plinkExists())
@@ -94,8 +75,8 @@ namespace Toasty
                     _toaster.tunnels.Start(item.ID);
 
                 }
-                loadListView();
             }
+            lstTunnels.Items.Refresh();
         }
 
         private void Stop(object sender, RoutedEventArgs e)
@@ -108,7 +89,7 @@ namespace Toasty
                 log.Add(Levels.INFO, "Collapsing tunnel: " + item.Name + " - " + item.Description);
                 _toaster.tunnels.Stop(item.ID);
             }
-            loadListView();
+            lstTunnels.Items.Refresh();
         }
 
         private void checkErrors()
