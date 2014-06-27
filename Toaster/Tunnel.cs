@@ -120,6 +120,7 @@ namespace Toaster
                 else if (Instance.HasExited)
                 {
                     Toast.Instance.logger.Add(Levels.INFO, Name + " has already collapsed");
+                    Instance.Close();
                 }
                 else
                 {
