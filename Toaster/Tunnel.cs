@@ -177,7 +177,7 @@ namespace Toaster
             StringBuilder s = new StringBuilder();
             s.AppendLine("");
             s.AppendLine("Name: " + Name);
-            s.AppendLine("Identity: ");
+            s.AppendLine("Identity: " + identity.Name);
             s.AppendLine("User: " + identity.User);
             s.AppendLine("Host: " + Host);
             s.AppendLine("Ports: " + (LocalPort == 0 ? " D:" +

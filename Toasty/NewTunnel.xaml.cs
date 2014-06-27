@@ -30,36 +30,13 @@ namespace Toasty
         public NewTunnel()
         {
             InitializeComponent();
-            loadListView();
+            lstIdentities.ItemsSource = _toaster.settings.Identities;
         }
-
-        private void loadListView()
-        {
-            lstIdentities.Items.Clear();
-            foreach (Identity i in _toaster.settings.Identities)
-            {
-                IdentityItem s = new IdentityItem();
-                
-                s.ID = i.ID;
-                s.Name = i.Name;
-                s.User = i.User;
-                if (!string.IsNullOrEmpty(i.Password))
-                    s.Password = "YES";
-                else
-                    s.Password = "NO";
-                if (!string.IsNullOrEmpty(i.PrivateKey))
-                    s.PrivateKey = System.IO.Path.GetFileName(i.PrivateKey);
-                else
-                    s.PrivateKey = "NO";
-                
-                lstIdentities.Items.Add(s);
-            }
-        }
-
+        
         private void Delete(object sender, RoutedEventArgs e)
         {
             Button b = sender as Button;
-            IdentityItem item = b.CommandParameter as IdentityItem;
+            Identity item = b.CommandParameter as Identity;
 
             MessageBoxResult result = MessageBox.Show("Are you sure you would like to delete the " + item.Name + " identity", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Asterisk);
             if (result == MessageBoxResult.Yes)
@@ -67,7 +44,7 @@ namespace Toasty
                 _log.Add(Levels.INFO, "Deleting saved identity: " + item.Name + " - Username: " + item.User);
                 _toaster.settings.Identities.RemoveAll(i => i.ID == item.ID);
             }
-            loadListView();
+            lstIdentities.Items.Refresh();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -122,13 +99,9 @@ namespace Toasty
         {
             //Create the file open dialog
             Microsoft.Win32.OpenFileDialog openDialog = new Microsoft.Win32.OpenFileDialog();
-
-            //Set the filter options
             openDialog.Title = "Select the private key you want to use.";
             openDialog.Filter = "Private Key |*.ppk";
             openDialog.FilterIndex = 1;
-
-            //Show the dialog box to the user
             Nullable<bool> result = openDialog.ShowDialog();
 
             if (result == true)
@@ -148,8 +121,7 @@ namespace Toasty
             clearTextBoxes();
             if (lstIdentities.SelectedItem != null)
             {
-                IdentityItem ii = lstIdentities.SelectedItem as IdentityItem;
-                Identity i = _toaster.settings.Identities.First(a => a.ID == ii.ID);
+                Identity i = lstIdentities.SelectedItem as Identity;
                 if (i != null)
                 {
                     _identity = i;
@@ -160,14 +132,5 @@ namespace Toasty
                 }
             }
         }
-    }
-
-    public class IdentityItem
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string User { get; set; }
-        public string Password { get; set; }
-        public string PrivateKey { get; set; }
     }
 }

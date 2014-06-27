@@ -16,8 +16,8 @@
                         <GridView>
                             <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding Name}" />
                             <GridViewColumn Header="User" Width="Auto" DisplayMemberBinding="{Binding User}" />
-                            <GridViewColumn Header="Password" Width="Auto" DisplayMemberBinding="{Binding Password}" />
-                            <GridViewColumn Header="Key" Width="Auto" DisplayMemberBinding="{Binding PrivateKey}" />
+                            <GridViewColumn Header="Password" Width="Auto" DisplayMemberBinding="{Binding PasswordDesc}" />
+                            <GridViewColumn Header="Key" Width="Auto" DisplayMemberBinding="{Binding PrivateKeyDesc}" />
                             <GridViewColumn Header="Delete" Width="Auto">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
